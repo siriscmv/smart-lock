@@ -2,6 +2,9 @@
 	"name": "smart-lock",
 	"version": "0.1.0",
 	"private": true,
+	"prisma": {
+		"schema": "./src/utils/schema.prisma"
+	},
 	"scripts": {
 		"next:dev": "next dev",
 		"tw:dev": "npx tailwindcss -i ./src/styles/tw.css -o ./src/styles/globals.css --watch",

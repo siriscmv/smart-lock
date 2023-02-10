@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import Button from './Button';
+import Button from '@components/Button';
 
 interface AuthProps {
-	type: 'OWNER' | 'DRIVER';
+	type: 'OWNER' | 'DRIVER' | string;
+	overrideFetchURL?: string;
+	overrideTitle?: string;
 }
 
 const Auth = (props: AuthProps) => {
@@ -11,7 +13,7 @@ const Auth = (props: AuthProps) => {
 
 	return (
 		<div className='flex flex-col m-4 p-4 justify-between text-black bg-white rounded-md'>
-			<h2 className='font-bold text-center text-3xl uppercase'>Login</h2>
+			<h2 className='font-bold text-center text-3xl uppercase'>{props.overrideTitle ?? 'Login'}</h2>
 			<div className='flex flex-col p-2 m-2'>
 				<div className=''>
 					<div className='text-left font-semibold'>Username</div>
@@ -34,7 +36,7 @@ const Auth = (props: AuthProps) => {
 			</div>
 			<Button
 				run={() => {
-					fetch('/api/login', {
+					fetch(props.overrideFetchURL ?? '/api/login', {
 						method: 'POST',
 						body: JSON.stringify({
 							type: props.type,
