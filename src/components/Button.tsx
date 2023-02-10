@@ -5,12 +5,12 @@ interface ButtonProps {
 
 const Button = (props: ButtonProps) => {
 	return (
-		<div
+		<button
 			onClick={props.run}
-			className='text-center rounded-sm bg-primary m-2 p-3 font-semibold text-lg hover:bg-primary/60'
+			className='text-center hover:-translate-y-1 rounded-sm bg-primary m-2 p-3 font-semibold text-lg hover:bg-primary/60'
 		>
 			{props.text}
-		</div>
+		</button>
 	);
 };
 

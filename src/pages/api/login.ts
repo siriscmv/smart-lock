@@ -5,9 +5,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	const { username, password, type } = req.body;
 
-	if (type === 'driver') {
+	if (type === 'DRIVER') {
 		//TODO: Login driver
-	} else if (type === 'owner') {
+	} else if (type === 'OWNER') {
 		if (username === 'root' && password === 'ssn') {
 			//TODO: Create session here
 			return res.status(200).json({ message: 'Login successful' });
