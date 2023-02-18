@@ -1,20 +1,20 @@
 import express from 'express';
 import { Gpio } from 'onoff';
-import * as dotenv from 'dotenv';
-dotenv.config({ path: './../../.env' });
+import { config } from 'dotenv';
+
+config({ path: './../../.env' });
 
 const app = express();
 const lock = new Gpio(parseInt(process.env.LOCK_PIN), 'out');
 
 app.use((req, res, next) => {
 	if (req.headers.authorization !== process.env.CLIENT_API_AUTH) {
-		return res.status(403).json({ error: 'Invalid or missing credentials' });
-	}
-	next();
+		return res.status(403).send('Invalid or missing credentials');
+	} else next();
 });
 
 app.get('/ping', (_, res) => {
-	res.send('pong');
+	res.status(200).send('pong');
 });
 
 app.post('/lock', async (_, res) => {
