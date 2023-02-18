@@ -39,7 +39,7 @@ const Auth = (props: AuthProps) => {
 					fetch(props.overrideFetchURL ?? '/api/login', {
 						method: 'POST',
 						headers: {
-							'Accept': 'application/json',
+							Accept: 'application/json',
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({

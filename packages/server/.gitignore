@@ -2,3 +2,4 @@ node_modules
 .next
 .env
 src/styles/globals.css
+src/utils/db.sqlite

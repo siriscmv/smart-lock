@@ -3,36 +3,12 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
-    url = env("DATABASE_URL")
-    relationMode = "prisma"
-}
-
-model users {
-    username String @id
-    password String @unique
-    type EnumUserType
-}
-
-model vehicles {
-    vid String @id
-    vname String @unique
+  provider = "sqlite"
+  url      = "file:db.sqlite"
 }
 
 model vehicles_location {
     vid String @id
     latitude Float
     longitude Float
-    type EnumLocationType
-}
-
-enum EnumUserType {
-    OWNER
-    DRIVER
-}
-
-enum EnumLocationType {
-    START
-    TOLL
-    END
 }

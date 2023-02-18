@@ -2,7 +2,7 @@ import express from 'express';
 import { Gpio } from 'onoff';
 import { config } from 'dotenv';
 
-config({ path: './../../.env', override: true });
+config({ path: './.env', override: true });
 
 const app = express();
 const lock = new Gpio(parseInt(process.env.LOCK_PIN), 'out');
