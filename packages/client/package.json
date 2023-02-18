@@ -3,16 +3,15 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.mjs",
-	"module": "true",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"dotenv": "^16.0.3",
-		"onoff": "^6.0.3",
-		"ws": "^8.12.1"
+		"express": "^4.18.2",
+		"onoff": "^6.0.3"
 	}
 }
