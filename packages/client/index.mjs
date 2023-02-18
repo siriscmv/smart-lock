@@ -2,7 +2,7 @@ import express from 'express';
 import { Gpio } from 'onoff';
 import { config } from 'dotenv';
 
-config({ path: './../../.env' });
+config({ path: './../../.env', override: true });
 
 const app = express();
 const lock = new Gpio(parseInt(process.env.LOCK_PIN), 'out');
@@ -17,12 +17,12 @@ app.get('/ping', (_, res) => {
 	res.status(200).send('pong');
 });
 
-app.post('/lock', async (_, res) => {
+app.get('/lock', async (_, res) => {
 	await lock.write(0);
 	res.status(204).send();
 });
 
-app.post('/unlock', async (_, res) => {
+app.get('/unlock', async (_, res) => {
 	await lock.write(1);
 	res.status(204).send();
 });
