@@ -13,7 +13,7 @@ module.exports = {
 				slate: '#10100e',
 				light: '#f5edf0',
 				success: '#63ff52',
-				dangerous: '#ff5263'
+				danger: '#ff5263'
 			}
 		}
 	},
