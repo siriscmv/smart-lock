@@ -8,16 +8,28 @@ export default function Toaster() {
             toastOptions={{
                 duration: 6_000,
                 className: 'text-center',
+                loading: {
+                    style: {
+                        background: '#000748',
+                        color: '#5465ff'
+                    }
+                },
+                blank: {
+                    style: {
+                        background: '#000748',
+                        color: '#5465ff'
+                    }
+                },
                 success: {
                     style: {
-                        background: '#0A4205',
-                        color: '#66F359'
+                        background: '#074800',
+                        color: '#63ff52'
                     }
                 },
                 error: {
                     style: {
-                        background: '#42050A',
-                        color: '#f35966'
+                        background: '#480007',
+                        color: '#ff5263'
                     }
                 }
             }}
