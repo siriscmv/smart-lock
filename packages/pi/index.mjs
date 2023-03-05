@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 config({ path: './.env', override: true });
 
 const app = express();
-const lock = new Gpio(parseInt(process.env.LOCK_PIN), 'out');
+const lock = new Gpio(parseInt(process.env.PIN), 'out');
 
 app.get('/ping', (_, res) => {
 	res.status(200).send('pong');
