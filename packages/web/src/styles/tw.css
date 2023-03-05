@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--primary: #5465ff;
+	--secondary: #ffe900;
+	--slate: #10100e;
+	--light: #f5edf0;
+	--success: #63ff52;
+	--dangerous: #ff5263;
+}
+
+body {
+	font-smooth: auto;
+
+	overflow-x: hidden;
+	scroll-behavior: smooth;
+
+	scrollbar-width: auto;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	border: 0 solid #fff;
+	border-radius: 16px;
+	background-color: var(--primary);
+}
