@@ -6,7 +6,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { lat, lon } = req.body;
 	if (!lat || !lon) return res.status(400).end();
 
-	const distance = getDistance(lat, lon, 12.7504711, 80.1961537); //TODO: Get coordinates from DB
+	//TODO: get v_id, d_id here, check if driver is authorized to use that vehicle
+	//TODO: Then using v_id get the coords from DB
+
+	const distance = getDistance(lat, lon, 12.7504711, 80.1961537);
 	if (distance < 0.25) return res.status(204).end();
 
 	return res.status(403).json({
