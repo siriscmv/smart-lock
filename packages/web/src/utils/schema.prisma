@@ -1,5 +1,5 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -7,8 +7,36 @@ datasource db {
   url      = "file:db.sqlite"
 }
 
-model vehicles_location {
-    vid String @id
-    latitude Float
-    longitude Float
+model vehicle_locations {
+  id        Int   @id
+  latitude  Float
+  longitude Float
+}
+
+model drivers {
+  id       Int    @id
+  username String @unique
+  password String
+}
+
+model owners {
+  id       Int    @id
+  username String @unique
+  password String
+}
+
+model authorized_drivers {
+  v_id Int
+  d_id Int
+
+  @@id([v_id, d_id])
+}
+
+model logs {
+  v_id      Int
+  d_id      Int
+  timestamp DateTime
+  message   String
+
+  @@id([v_id, d_id, timestamp])
 }
