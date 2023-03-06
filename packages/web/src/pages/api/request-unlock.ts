@@ -9,11 +9,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	//TODO: get v_id, d_id here, check if driver is authorized to use that vehicle
 	//TODO: Then using v_id get the coords from DB
 
-	const distance = getDistance(lat, lon, 12.7504711, 80.1961537);
-	if (distance < 0.25) return res.status(204).end();
+	const distance = getDistance(lat, lon, 12.7500413, 80.2002732);
+	if (distance < 0.01) {
+		//TODO: Unlock here
+		return res.status(200).json({
+			message: `Unlocked! You were ${humanize(distance)} away from the destination`
+		});
+	}
 
 	return res.status(403).json({
-		message: `You are ${distance.toFixed(2)} km away from the destination`
+		message: `You are ${humanize(distance)} away from the destination`
 	});
 }
 
@@ -31,4 +36,9 @@ const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => 
 
 const deg2rad = (deg: number) => {
 	return deg * (Math.PI / 180);
+};
+
+const humanize = (distanceInKM: number) => {
+	if (distanceInKM > 1) return `${distanceInKM.toFixed(3)} km`;
+	else return `${(distanceInKM * 1000).toFixed(1)} m`;
 };

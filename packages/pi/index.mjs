@@ -18,12 +18,12 @@ app.use((req, res, next) => {
 });
 
 app.get('/lock', async (_, res) => {
-	await lock.write(0);
+	await lock.write(1);
 	res.status(204).send();
 });
 
 app.get('/unlock', async (_, res) => {
-	await lock.write(1);
+	await lock.write(0);
 	res.status(204).send();
 });
 

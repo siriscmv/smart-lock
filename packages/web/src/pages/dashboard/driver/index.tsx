@@ -8,7 +8,8 @@ export default function Driver() {
 		positionOptions: {
 			enableHighAccuracy: true
 		},
-		userDecisionTimeout: 5_000
+		watchPosition: true,
+		userDecisionTimeout: 15_000
 	});
 
 	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
@@ -38,12 +39,13 @@ export default function Driver() {
 									})
 								})
 									.then((res) => {
-										if (res.status === 204) resolve('Unlocked!');
-										else if (res.status === 403) {
+										if (res.status !== 200 && res.status !== 403) reject('Failed to unlock');
+										else {
 											res.json().then((data) => {
-												reject(data.message);
+												if (res.ok) resolve(data.message);
+												else reject(data.message);
 											});
-										} else reject('Failed to unlock');
+										}
 									})
 									.catch((_) => reject('Failed to unlock'));
 							}),
