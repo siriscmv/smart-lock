@@ -17,7 +17,7 @@ export default async function log(data: Data) {
 		c.ws.send(
 			JSON.stringify({
 				op: 'ACTION_LOG',
-				data: logData
+				data: { ...logData, timestamp: logData.timestamp.getTime() }
 			})
 		);
 	});
