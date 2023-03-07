@@ -5,7 +5,6 @@
 - Set env vars
 - Ensure "lock" actually locks and not the other way around
 - Figure out circuit
-- Create a daemon that runs the python file on startup
 
 ## server
 

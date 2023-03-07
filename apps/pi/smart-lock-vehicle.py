@@ -25,11 +25,11 @@ def on_message(ws, message):
     data = json.loads(message)
     if data.get('op') == 'LOCK':
         GPIO.output(pin_number, GPIO.LOW)  # turn relay on
-        data['op'] = 'OK'
+        data['op'] += 'OK'
         ws.send(json.dumps(data)) 
     elif data.get('op') == 'UNLOCK':
         GPIO.output(pin_number, GPIO.HIGH)  # turn relay off
-        data['op'] = 'OK'
+        data['op'] += 'OK'
         ws.send(json.dumps(data)) 
 
 def on_error(ws, error):

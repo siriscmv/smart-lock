@@ -1,5 +1,5 @@
-import { drivers, owners, vehicles } from '@prisma/client';
-import prisma from '@utils/prisma';
+import type { drivers, owners, vehicles } from '@prisma/client';
+import prisma from './prisma.js';
 
 export async function createVehicle(data: Omit<vehicles, 'id'>) {
 	const id =
