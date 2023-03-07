@@ -26,21 +26,27 @@ export default function Driver() {
 					run={() => {
 						toast.promise(
 							new Promise<string>((resolve, reject) => {
-								window.ws!.addEventListener('message', (msg) => {
-									const d = JSON.parse(msg.data);
+								window.ws!.addEventListener(
+									'message',
+									(msg) => {
+										const d = JSON.parse(msg.data);
 
-									if (d.op === "OK") resolve(d.msg ?? 'Unlocked');
-									else reject(d.msg ?? 'Failed to unlock');
-								}, { once: true });
-
-								window.ws!.send(JSON.stringify({
-									op: 'REQUEST_UNLOCK',
-									data: {
-										lat: coords.latitude,
-										lon: coords.longitude,
+										if (d.op === 'OK') resolve(d.msg ?? 'Unlocked');
+										else reject(d.msg ?? 'Failed to unlock');
 									},
-									auth: window.auth
-								}))
+									{ once: true }
+								);
+
+								window.ws!.send(
+									JSON.stringify({
+										op: 'REQUEST_UNLOCK',
+										data: {
+											lat: coords.latitude,
+											lon: coords.longitude
+										},
+										auth: window.auth
+									})
+								);
 							}),
 							{
 								loading: 'Requesting unlock...',

@@ -39,8 +39,8 @@ const Auth = (props: AuthProps) => {
 						type='password'
 					/>
 				</div>
-				{
-					props.type === 'DRIVER' ? (<div className=''>
+				{props.type === 'DRIVER' ? (
+					<div className=''>
 						<div className='text-left font-semibold'>Vehicle ID</div>
 						<input
 							onChange={(e) => setVID(parseInt(e.target.value))}
@@ -48,8 +48,10 @@ const Auth = (props: AuthProps) => {
 							className='bg-black rounded-md text-white m-2 p-2'
 							type='number'
 						/>
-					</div>) : (<></>)
-				}
+					</div>
+				) : (
+					<></>
+				)}
 			</div>
 			<Button
 				run={() => {
@@ -63,15 +65,19 @@ const Auth = (props: AuthProps) => {
 						}
 					};
 
-					window.ws?.addEventListener('message', (msg) => {
-						const d = JSON.parse(msg.data);
-						if (!d.auth) {
-							toast.error('Failed to login');
-							return;
-						}
-						window.auth = d.auth;
-						window.location.href = '/dashboard/' + props.type.toLowerCase();
-					}, { once: true });
+					window.ws?.addEventListener(
+						'message',
+						(msg) => {
+							const d = JSON.parse(msg.data);
+							if (!d.auth) {
+								toast.error('Failed to login');
+								return;
+							}
+							window.auth = d.auth;
+							window.location.href = '/dashboard/' + props.type.toLowerCase();
+						},
+						{ once: true }
+					);
 
 					window.ws?.send(JSON.stringify(ob));
 				}}
