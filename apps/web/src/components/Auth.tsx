@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@components/Button';
+import { toast } from 'react-hot-toast';
 
 interface AuthProps {
 	type: 'OWNER' | 'DRIVER' | string;
@@ -10,6 +11,10 @@ interface AuthProps {
 const Auth = (props: AuthProps) => {
 	const [username, setUsername] = useState<string | null>(null);
 	const [password, setPassword] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!window.ws) window.ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL!);
+	}, []);
 
 	return (
 		<div className='flex flex-col m-4 p-4 justify-between text-black bg-white rounded-md'>
@@ -36,18 +41,24 @@ const Auth = (props: AuthProps) => {
 			</div>
 			<Button
 				run={() => {
-					fetch(props.overrideFetchURL ?? '/api/login', {
-						method: 'POST',
-						headers: {
-							Accept: 'application/json',
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({
-							type: props.type,
-							username,
-							password
-						})
-					});
+					const ob = {
+						op: 'LOGIN',
+						type: props.type,
+						username,
+						password
+					};
+
+					window.ws?.addEventListener('message', (msg) => {
+						const d = JSON.parse(msg.data);
+						if (!d.auth) {
+							toast.error('Failed to login');
+							return;
+						}
+						window.auth = d.auth;
+						window.location.href = '/dashboard/' + props.type.toLowerCase();
+					}, { once: true });
+
+					window.ws?.send(JSON.stringify(ob));
 				}}
 				text='Login'
 			/>

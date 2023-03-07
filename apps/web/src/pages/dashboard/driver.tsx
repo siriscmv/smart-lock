@@ -1,5 +1,4 @@
 import Button from '@components/Button';
-import Toaster from '@components/Toaster';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 
@@ -18,7 +17,6 @@ export default function Driver() {
 
 	return (
 		<div className='flex flex-col text-center'>
-			<Toaster />
 			<div className='flex flex-col text-xl'>
 				<span>Your Latitude: {coords.latitude}</span>
 				<span>Your Longitude: {coords.longitude}</span>
@@ -28,26 +26,19 @@ export default function Driver() {
 					run={() => {
 						toast.promise(
 							new Promise<string>((resolve, reject) => {
-								fetch('/api/request-unlock', {
-									method: 'POST',
-									headers: {
-										'Content-Type': 'application/json'
-									},
-									body: JSON.stringify({
-										lat: coords.latitude,
-										lon: coords.longitude
-									})
-								})
-									.then((res) => {
-										if (res.status !== 200 && res.status !== 403) reject('Failed to unlock');
-										else {
-											res.json().then((data) => {
-												if (res.ok) resolve(data.message);
-												else reject(data.message);
-											});
-										}
-									})
-									.catch((_) => reject('Failed to unlock'));
+								window.ws!.addEventListener('message', (msg) => {
+									const d = JSON.parse(msg.data);
+
+									if (d.op === "OK") resolve(d.msg ?? 'Unlocked');
+									else reject(d.msg ?? 'Failed to unlock');
+								}, { once: true });
+
+								window.ws!.send(JSON.stringify({
+									op: 'REQUEST_UNLOCK',
+									lat: coords.latitude,
+									lon: coords.longitude,
+									auth: window.auth
+								}))
 							}),
 							{
 								loading: 'Requesting unlock...',

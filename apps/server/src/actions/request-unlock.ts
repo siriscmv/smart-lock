@@ -1,5 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
+/*
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'POST') return res.status(405).end();
 
@@ -42,3 +41,4 @@ const humanize = (distanceInKM: number) => {
 	if (distanceInKM > 1) return `${distanceInKM.toFixed(3)} km`;
 	else return `${(distanceInKM * 1000).toFixed(1)} m`;
 };
+*/
