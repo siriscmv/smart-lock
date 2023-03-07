@@ -2,9 +2,10 @@ import connections from '../utils/connections.js';
 import prisma from '../utils/prisma.js';
 
 interface Data {
-	message: string;
+	distance: number;
 	d_id: number;
 	v_id: number;
+	action: 'LOCKED' | 'UNLOCKED' | 'UNLOCK_REJECTED' | 'FAIL';
 }
 
 export default async function log(data: Data) {

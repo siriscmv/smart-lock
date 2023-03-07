@@ -1,6 +1,7 @@
 import connections from '../utils/connections.js';
 import type WebSocket from 'ws';
 import prisma from '../utils/prisma.js';
+import log from '../utils/log.js';
 
 export default async function driver(ws: WebSocket, msg: string) {
 	const {
@@ -10,8 +11,10 @@ export default async function driver(ws: WebSocket, msg: string) {
 	} = JSON.parse(msg);
 	if (op !== 'REQUEST_UNLOCK' && op !== 'REQUEST_LOCK') return;
 
-	const vid =
-		Array.from(connections.values()).find((c) => c.auth === auth && c.type === 'DRIVER')?.associated_vehicle ?? null;
+	const driver = Array.from(connections.values()).find((c) => c.auth === auth && c.type === 'DRIVER');
+	if (!driver) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
+
+	const vid = driver.associated_vehicle ?? null;
 	if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
 	const vehicle = Array.from(connections.values()).find((c) => c.id === vid && c.type === 'VEHICLE');
@@ -21,29 +24,36 @@ export default async function driver(ws: WebSocket, msg: string) {
 	const distance = Math.min(...destinations.map((d) => getDistance(lat, lon, d.latitude, d.longitude)));
 
 	if (distance > 0.01) {
-		return ws.send(
+		ws.send(
 			JSON.stringify({
 				op: op + '_FAIL',
 				msg: `You are ${humanize(distance)} away from the destination`
 			})
 		);
+
+		await log({ v_id: vid, d_id: driver.id, action: 'UNLOCK_REJECTED', distance });
+		return;
 	}
 
-	vehicle.ws.once('message', (msg) => {
+	vehicle.ws.once('message', async (msg) => {
 		const data = JSON.parse(msg.toString());
-		if (data.op.endsWith('OK'))
+		if (data.op.endsWith('OK')) {
+			const msg = `Unlocked! You were ${humanize(distance)} away from the destination`;
 			ws.send(
 				JSON.stringify({
 					op: op + '_OK',
-					msg: `Unlocked! You were ${humanize(distance)} away from the destination`
+					msg
 				})
 			);
-		else
+			await log({ v_id: vid, d_id: driver.id, action: 'UNLOCKED', distance });
+		} else {
 			ws.send(
 				JSON.stringify({
 					op: op + '_FAIL'
 				})
 			);
+			await log({ v_id: vid, d_id: driver.id, action: 'FAIL', distance });
+		}
 	});
 
 	vehicle.ws.send(
