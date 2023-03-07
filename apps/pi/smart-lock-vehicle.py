@@ -25,11 +25,11 @@ def on_message(ws, message):
     data = json.loads(message)
     if data.get('op') == 'LOCK':
         GPIO.output(pin_number, GPIO.LOW)  # turn relay on
-        data['op'] += 'OK'
+        data['op'] += '_OK'
         ws.send(json.dumps(data)) 
     elif data.get('op') == 'UNLOCK':
         GPIO.output(pin_number, GPIO.HIGH)  # turn relay off
-        data['op'] += 'OK'
+        data['op'] += '_OK'
         ws.send(json.dumps(data)) 
 
 def on_error(ws, error):
@@ -40,7 +40,7 @@ def on_close(ws):
 
 def on_open(ws):
     print('Connection established')
-    ws.send(json.dumps({'op': 'identify', 'id': int(v_id)})) # type: ignore
+    ws.send(json.dumps({'op': 'IDENTIFY', 'data': {'id': int(v_id), 'type': 'VEHICLE'}})) # type: ignore
 
 if __name__ == '__main__':
     websocket.enableTrace(True)
