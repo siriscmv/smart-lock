@@ -35,8 +35,10 @@ export default function Driver() {
 
 								window.ws!.send(JSON.stringify({
 									op: 'REQUEST_UNLOCK',
-									lat: coords.latitude,
-									lon: coords.longitude,
+									data: {
+										lat: coords.latitude,
+										lon: coords.longitude,
+									},
 									auth: window.auth
 								}))
 							}),

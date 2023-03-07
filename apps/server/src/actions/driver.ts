@@ -3,11 +3,15 @@ import type WebSocket from 'ws';
 import prisma from '../utils/prisma.js';
 
 export default async function driver(ws: WebSocket, msg: string) {
-	const { op, id, lat, lon } = JSON.parse(msg);
+	const {
+		op,
+		auth,
+		data: { lat, lon }
+	} = JSON.parse(msg);
 	if (op !== 'REQUEST_UNLOCK' && op !== 'REQUEST_LOCK') return;
 
 	const vid =
-		Array.from(connections.values()).find((c) => c.id === id && c.type === 'DRIVER')?.associated_vehicle ?? null;
+		Array.from(connections.values()).find((c) => c.auth === auth && c.type === 'DRIVER')?.associated_vehicle ?? null;
 	if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
 	const vehicle = Array.from(connections.values()).find((c) => c.id === vid && c.type === 'VEHICLE');
@@ -20,7 +24,7 @@ export default async function driver(ws: WebSocket, msg: string) {
 		return ws.send(
 			JSON.stringify({
 				op: op + '_FAIL',
-				message: `You are ${humanize(distance)} away from the destination`
+				msg: `You are ${humanize(distance)} away from the destination`
 			})
 		);
 	}
@@ -31,7 +35,7 @@ export default async function driver(ws: WebSocket, msg: string) {
 			ws.send(
 				JSON.stringify({
 					op: op + '_OK',
-					message: `Unlocked! You were ${humanize(distance)} away from the destination`
+					msg: `Unlocked! You were ${humanize(distance)} away from the destination`
 				})
 			);
 		else

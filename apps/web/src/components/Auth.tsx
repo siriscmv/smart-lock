@@ -3,7 +3,7 @@ import Button from '@components/Button';
 import { toast } from 'react-hot-toast';
 
 interface AuthProps {
-	type: 'OWNER' | 'DRIVER' | string;
+	type: 'OWNER' | 'DRIVER';
 	overrideFetchURL?: string;
 	overrideTitle?: string;
 }
@@ -11,6 +11,7 @@ interface AuthProps {
 const Auth = (props: AuthProps) => {
 	const [username, setUsername] = useState<string | null>(null);
 	const [password, setPassword] = useState<string | null>(null);
+	const [vid, setVID] = useState<number | undefined>(undefined);
 
 	useEffect(() => {
 		if (!window.ws) window.ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL!);
@@ -26,7 +27,7 @@ const Auth = (props: AuthProps) => {
 						onChange={(e) => setUsername(e.target.value)}
 						placeholder='Enter username here'
 						className='bg-black rounded-md text-white m-2 p-2'
-						type={'text'}
+						type='text'
 					/>
 				</div>
 				<div className=''>
@@ -35,17 +36,31 @@ const Auth = (props: AuthProps) => {
 						onChange={(e) => setPassword(e.target.value)}
 						placeholder='Enter password here'
 						className='bg-black rounded-md text-white m-2 p-2'
-						type={'password'}
+						type='password'
 					/>
 				</div>
+				{
+					props.type === 'DRIVER' ? (<div className=''>
+						<div className='text-left font-semibold'>Vehicle ID</div>
+						<input
+							onChange={(e) => setVID(parseInt(e.target.value))}
+							placeholder='Enter vehicle ID here'
+							className='bg-black rounded-md text-white m-2 p-2'
+							type='number'
+						/>
+					</div>) : (<></>)
+				}
 			</div>
 			<Button
 				run={() => {
 					const ob = {
 						op: 'LOGIN',
-						type: props.type,
-						username,
-						password
+						data: {
+							type: props.type,
+							username,
+							password,
+							associated_vehicle: vid
+						}
 					};
 
 					window.ws?.addEventListener('message', (msg) => {

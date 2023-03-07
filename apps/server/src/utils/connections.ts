@@ -32,7 +32,7 @@ const identify = (ws: WebSocket): Promise<Socket | null> => {
 				const data = JSON.parse(raw.toString());
 				if (data.op !== 'IDENTIFY') return resolve(null);
 
-				const { id, type, username, password, associated_vehicle } = data;
+				const { id, type, username, password, associated_vehicle } = data.data;
 				if (type === 'VEHICLE') {
 					resolve({
 						id,
