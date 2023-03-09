@@ -1,23 +1,5 @@
-import type { drivers, owners, vehicles } from '@prisma/client';
+import type { drivers, owners } from '@prisma/client';
 import prisma from './prisma.js';
-
-export async function createVehicle(data: Omit<vehicles, 'id'>) {
-	const id =
-		((
-			await prisma.vehicles.findFirst({
-				orderBy: {
-					id: 'desc'
-				}
-			})
-		)?.id ?? 1000) + 1;
-
-	return await prisma.vehicles.create({
-		data: {
-			id,
-			...data
-		}
-	});
-}
 
 export async function createOnwer(data: Omit<owners, 'id'>) {
 	const id =

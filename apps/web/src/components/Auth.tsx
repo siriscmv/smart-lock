@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from '@components/Button';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router'
 
 interface AuthProps {
 	type: 'OWNER' | 'DRIVER';
@@ -16,6 +17,8 @@ const Auth = (props: AuthProps) => {
 	useEffect(() => {
 		if (!window.ws) window.ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL!);
 	}, []);
+
+	const router = useRouter();
 
 	return (
 		<div className='flex flex-col m-4 p-4 justify-between text-black bg-white rounded-md'>
@@ -56,7 +59,7 @@ const Auth = (props: AuthProps) => {
 			<Button
 				run={() => {
 					const ob = {
-						op: 'LOGIN',
+						op: 'IDENTIFY',
 						data: {
 							type: props.type,
 							username,
@@ -74,7 +77,7 @@ const Auth = (props: AuthProps) => {
 								return;
 							}
 							window.auth = d.auth;
-							window.location.href = '/dashboard/' + props.type.toLowerCase();
+							router.push(`/dashboard/${props.type.toLowerCase()}`);
 						},
 						{ once: true }
 					);

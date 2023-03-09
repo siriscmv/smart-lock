@@ -14,7 +14,7 @@ export default function Owner() {
 	useEffect(() => {
 		window.ws!.onmessage = (msg: MessageEvent<string>) => {
 			const log = JSON.parse(msg.data);
-			setLogs([log, ...logs]);
+			if (log.op === 'ACTION_LOG') setLogs(logs => [log.data, ...logs]);
 		};
 	}, []);
 

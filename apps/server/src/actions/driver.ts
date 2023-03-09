@@ -38,11 +38,10 @@ export default async function driver(ws: WebSocket, msg: string) {
 	vehicle.ws.once('message', async (msg) => {
 		const data = JSON.parse(msg.toString());
 		if (data.op.endsWith('OK')) {
-			const msg = `Unlocked! You were ${humanize(distance)} away from the destination`;
 			ws.send(
 				JSON.stringify({
 					op: op + '_OK',
-					msg
+					msg: `Unlocked! You were ${humanize(distance)} away from the destination`
 				})
 			);
 			await log({ v_id: vid, d_id: driver.id, action: 'UNLOCKED', distance });

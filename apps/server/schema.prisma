@@ -13,11 +13,6 @@ model vehicle_locations {
   longitude Float
 }
 
-model vehicles {
-  id      Int    @id
-  api_url String @unique
-}
-
 model drivers {
   id       Int    @id
   username String @unique
