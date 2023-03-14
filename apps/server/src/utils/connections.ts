@@ -100,7 +100,7 @@ const identify = (ws: WebSocket): Promise<Socket | null> => {
 };
 
 setInterval(() => {
-	connections.forEach(c => {
-		c.ws.send(JSON.stringify({op:"HEARTBEAT"}));
-	})
-}, 30_1000)
+	connections.forEach((c) => {
+		c.ws.send(JSON.stringify({ op: 'HEARTBEAT' }));
+	});
+}, 30_1000);

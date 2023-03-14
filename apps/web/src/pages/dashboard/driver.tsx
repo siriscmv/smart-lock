@@ -22,42 +22,44 @@ export default function Driver() {
 				<span>Your Longitude: {coords.longitude}</span>
 			</div>
 			<div className='flex flex-row'>
-				{['Lock', 'Unlock'].map(b => <Button
-					key={b}
-					run={() => {
-						toast.promise(
-							new Promise<string>((resolve, reject) => {
-								window.ws!.addEventListener(
-									'message',
-									(msg) => {
-										const d = JSON.parse(msg.data);
+				{['Lock', 'Unlock'].map((b) => (
+					<Button
+						key={b}
+						run={() => {
+							toast.promise(
+								new Promise<string>((resolve, reject) => {
+									window.ws!.addEventListener(
+										'message',
+										(msg) => {
+											const d = JSON.parse(msg.data);
 
-										if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
-										else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
-									},
-									{ once: true }
-								);
-
-								window.ws!.send(
-									JSON.stringify({
-										op: `REQUEST_${b.toUpperCase()}`,
-										data: {
-											lat: coords.latitude,
-											lon: coords.longitude
+											if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
+											else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
 										},
-										auth: window.auth
-									})
-								);
-							}),
-							{
-								loading: `Requesting ${b.toLowerCase()}...`,
-								success: (data) => data,
-								error: (data) => data
-							}
-						);
-					}}
-					text={`Request ${b}`}
-				/>)}
+										{ once: true }
+									);
+
+									window.ws!.send(
+										JSON.stringify({
+											op: `REQUEST_${b.toUpperCase()}`,
+											data: {
+												lat: coords.latitude,
+												lon: coords.longitude
+											},
+											auth: window.auth
+										})
+									);
+								}),
+								{
+									loading: `Requesting ${b.toLowerCase()}...`,
+									success: (data) => data,
+									error: (data) => data
+								}
+							);
+						}}
+						text={`Request ${b}`}
+					/>
+				))}
 			</div>
 		</div>
 	);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from '@components/Button';
 import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 interface AuthProps {
 	type: 'OWNER' | 'DRIVER';
