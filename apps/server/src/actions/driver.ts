@@ -1,7 +1,7 @@
 import connections from '../utils/connections.js';
 import type WebSocket from 'ws';
 import prisma from '../utils/prisma.js';
-import log from '../utils/log.js';
+import log, { Data } from '../utils/log.js';
 
 export default async function driver(ws: WebSocket, msg: string) {
 	const {
@@ -31,7 +31,7 @@ export default async function driver(ws: WebSocket, msg: string) {
 			})
 		);
 
-		await log({ v_id: vid, d_id: driver.id, action: 'UNLOCK_REJECTED', distance });
+		await log({ v_id: vid, d_id: driver.id, action: op+'_REJECTED' as Data['action'], distance });
 		return;
 	}
 
@@ -41,10 +41,10 @@ export default async function driver(ws: WebSocket, msg: string) {
 			ws.send(
 				JSON.stringify({
 					op: op + '_OK',
-					msg: `Unlocked! You were ${humanize(distance)} away from the destination`
+					msg: `${op === 'REQUEST_LOCK' ? 'Locked': 'Unlocked'}! You were ${humanize(distance)} away from the destination`
 				})
 			);
-			await log({ v_id: vid, d_id: driver.id, action: 'UNLOCKED', distance });
+			await log({ v_id: vid, d_id: driver.id, action: op === 'REQUEST_LOCK' ? 'LOCKED': 'UNLOCKED', distance });
 		} else {
 			ws.send(
 				JSON.stringify({

@@ -21,8 +21,9 @@ export default function Driver() {
 				<span>Your Latitude: {coords.latitude}</span>
 				<span>Your Longitude: {coords.longitude}</span>
 			</div>
-			<div className='flex flex-col'>
-				<Button
+			<div className='flex flex-row'>
+				{['Lock', 'Unlock'].map(b => <Button
+					key={b}
 					run={() => {
 						toast.promise(
 							new Promise<string>((resolve, reject) => {
@@ -31,15 +32,15 @@ export default function Driver() {
 									(msg) => {
 										const d = JSON.parse(msg.data);
 
-										if (d.op.endsWith('OK')) resolve(d.msg ?? 'Unlocked');
-										else reject(d.msg ?? 'Failed to unlock');
+										if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
+										else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
 									},
 									{ once: true }
 								);
 
 								window.ws!.send(
 									JSON.stringify({
-										op: 'REQUEST_UNLOCK',
+										op: `REQUEST_${b.toUpperCase()}`,
 										data: {
 											lat: coords.latitude,
 											lon: coords.longitude
@@ -49,14 +50,14 @@ export default function Driver() {
 								);
 							}),
 							{
-								loading: 'Requesting unlock...',
+								loading: `Requesting ${b.toLowerCase()}...`,
 								success: (data) => data,
 								error: (data) => data
 							}
 						);
 					}}
-					text='Request Unlock'
-				/>
+					text={`Request ${b}`}
+				/>)}
 			</div>
 		</div>
 	);
