@@ -103,4 +103,4 @@ setInterval(() => {
 	connections.forEach((c) => {
 		c.ws.send(JSON.stringify({ op: 'HEARTBEAT' }));
 	});
-}, 30_1000);
+}, 30_000);
