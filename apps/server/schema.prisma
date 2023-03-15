@@ -8,9 +8,11 @@ datasource db {
 }
 
 model vehicle_locations {
-  id        Int   @id
+  id        Int
   latitude  Float
   longitude Float
+
+  @@id([id, latitude, longitude])
 }
 
 model drivers {
