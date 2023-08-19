@@ -28,6 +28,7 @@
 		"resolveJsonModule": true,
 		"strict": true,
 		"target": "es2020",
+		"sourceMap": true,
 		"useDefineForClassFields": true
 	},
 	"include": ["src/**/*.ts", "src/*.ts"],

@@ -23,7 +23,7 @@ export default async function driver(ws: WebSocket, msg: string) {
 	const destinations = await prisma.vehicle_locations.findMany({ where: { id: vid } });
 	const distance = Math.min(...destinations.map((d) => getDistance(lat, lon, d.latitude, d.longitude)));
 
-	if (distance > 0.01) {
+	if (distance > 0.1) {
 		ws.send(
 			JSON.stringify({
 				op: op + '_FAIL',
