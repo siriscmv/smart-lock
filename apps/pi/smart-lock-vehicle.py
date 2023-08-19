@@ -18,19 +18,26 @@ pin_number = int(os.environ.get('PIN_NUMBER'))   # type: ignore
 websocket_address = os.environ.get('WEBSOCKET_ADDRESS') 
 v_id = os.environ.get('VEHICLE_ID')
 
-GPIO.setmode(GPIO.BCM)  # set board mode to Broadcom
-GPIO.setup(pin_number, GPIO.OUT)  # set up pin for output
+def unlock():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin_number, GPIO.OUT)
+
+# cleanup() sets all used pins back to INPUT mode
+# This is needed because setting the pin to LOW mode will still emit some small amount of voltage which is enough to trigger the relay
+# Setting it to INPUT (done by cleanup()) rather than low will completely get rid of the voltage
+def lock():
+    GPIO.cleanup()
 
 def on_message(ws, message):
     data = json.loads(message)
     if data.get('op') == 'LOCK':
-        GPIO.output(pin_number, GPIO.LOW)  # turn relay on
+        lock()
         data['op'] += '_OK'
-        ws.send(json.dumps(data)) 
+        ws.send(json.dumps(data))
     elif data.get('op') == 'UNLOCK':
-        GPIO.output(pin_number, GPIO.HIGH)  # turn relay off
+        unlock()
         data['op'] += '_OK'
-        ws.send(json.dumps(data)) 
+        ws.send(json.dumps(data))
 
 def on_error(ws, error):
     print(error)
