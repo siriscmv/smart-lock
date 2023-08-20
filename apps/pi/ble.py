@@ -12,7 +12,7 @@ except ImportError:
   import gobject as GObject
 import sys
 
-from random import randint
+from solenoid import lock, unlock, handle_password
 
 mainloop = None
 
@@ -375,6 +375,7 @@ class SendPasswordCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('SendPasswordCharacteristic Write: ' + repr(value))
         self.value = value
+        handle_password(value)
 
 
 class TestDescriptor(Descriptor):

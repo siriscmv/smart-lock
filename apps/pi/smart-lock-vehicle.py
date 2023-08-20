@@ -3,6 +3,7 @@ import json
 import websocket
 import os
 from dotenv import load_dotenv
+from solenoid import lock, unlock
 
 load_dotenv()  # load environment variables from .env file
 
@@ -13,20 +14,8 @@ if 'WEBSOCKET_ADDRESS' not in os.environ:
 if 'VEHICLE_ID' not in os.environ:
     raise Exception('VEHICLE_ID environment variable not set')
 
-
-pin_number = int(os.environ.get('PIN_NUMBER'))   # type: ignore
 websocket_address = os.environ.get('WEBSOCKET_ADDRESS') 
 v_id = os.environ.get('VEHICLE_ID')
-
-def unlock():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pin_number, GPIO.OUT)
-
-# cleanup() sets all used pins back to INPUT mode
-# This is needed because setting the pin to LOW mode will still emit some small amount of voltage which is enough to trigger the relay
-# Setting it to INPUT (done by cleanup()) rather than low will completely get rid of the voltage
-def lock():
-    GPIO.cleanup()
 
 def on_message(ws, message):
     data = json.loads(message)
