@@ -1,6 +1,5 @@
 import connections from '../utils/connections.js';
 import type WebSocket from 'ws';
-import prisma from '../utils/prisma.js';
 
 export default async function driver(ws: WebSocket, msg: string) {
 	const {
