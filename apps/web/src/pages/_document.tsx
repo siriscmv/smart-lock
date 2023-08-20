@@ -5,6 +5,7 @@ export default function Document() {
 		<Html lang='en'>
 			<Head>
 				<link rel='manifest' href='/manifest.json' />
+				<script src='load_worker.js' />
 			</Head>
 			<body>
 				<Main />
