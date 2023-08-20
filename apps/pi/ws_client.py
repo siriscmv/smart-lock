@@ -18,6 +18,11 @@ def on_message(ws, message):
         unlock()
         data['op'] += '_OK'
         ws.send(json.dumps(data))
+    elif data.get('op') == 'SET_BYPASS_PWD':
+        with open("/home/pi/smart-lock-client/pwd", "w") as file:
+            file.write(data.get('password'))
+        data['op'] += '_SUCCESS'
+        ws.send(json.dumps(data))
 
 def on_error(ws, error):
     print(error)

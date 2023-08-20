@@ -54,7 +54,8 @@ export default function Owner() {
 							data: {
 								password,
 								associated_vehicle: vid
-							}
+							},
+							auth: window.auth
 						};
 
 						window.ws?.addEventListener(
