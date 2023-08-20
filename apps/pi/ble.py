@@ -542,7 +542,7 @@ def find_adapter(bus):
 
     return None
 
-def main():
+def run_ble():
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
@@ -576,6 +576,3 @@ def main():
                                      error_handler=register_adv_error_cb)
 
     mainloop.run()
-
-if __name__ == '__main__':
-    main()

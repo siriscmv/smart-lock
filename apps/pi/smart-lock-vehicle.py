@@ -6,6 +6,7 @@ import json
 import websocket
 import os
 from solenoid import lock, unlock
+from ble import run_ble
 
 if 'PIN_NUMBER' not in os.environ:
     raise Exception('PIN_NUMBER environment variable not set')
@@ -39,6 +40,7 @@ def on_open(ws):
     ws.send(json.dumps({'op': 'IDENTIFY', 'data': {'id': int(v_id), 'type': 'VEHICLE'}})) # type: ignore
 
 if __name__ == '__main__':
+    run_ble()
     websocket.enableTrace(True)
     ws = websocket.WebSocketApp(websocket_address,
                                 on_message=on_message,
