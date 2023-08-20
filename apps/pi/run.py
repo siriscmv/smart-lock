@@ -1,6 +1,10 @@
 from dotenv import load_dotenv
 load_dotenv()  # load environment variables from .env file
 
+import os
+import time
+time.sleep(15)
+
 if 'PIN_NUMBER' not in os.environ:
     raise Exception('PIN_NUMBER environment variable not set')
 if 'WEBSOCKET_ADDRESS' not in os.environ:
