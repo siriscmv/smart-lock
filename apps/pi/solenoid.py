@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import os
 
 pin_number = int(os.environ.get('PIN_NUMBER'))   # type: ignore
 
@@ -19,7 +20,7 @@ def handle_password(dbus_bytes):
         with open("pwd", "r") as file:
             actual_password = file.read()
             if (actual_password != split[0]): return
-            
+
             if (split[1] == "LOCK"): lock()
             else: unlock() 
     except Exception as e: print("An error occurred:", e)

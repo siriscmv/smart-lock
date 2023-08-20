@@ -1,11 +1,11 @@
+from dotenv import load_dotenv
+load_dotenv()  # load environment variables from .env file
+
 import RPi.GPIO as GPIO
 import json
 import websocket
 import os
-from dotenv import load_dotenv
 from solenoid import lock, unlock
-
-load_dotenv()  # load environment variables from .env file
 
 if 'PIN_NUMBER' not in os.environ:
     raise Exception('PIN_NUMBER environment variable not set')
