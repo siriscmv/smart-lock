@@ -1,7 +1,7 @@
 import connections from '../utils/connections.js';
 import type WebSocket from 'ws';
 
-export default async function driver(ws: WebSocket, msg: string) {
+export default async function owner(ws: WebSocket, msg: string) {
 	const {
 		op,
 		auth,

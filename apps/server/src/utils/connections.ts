@@ -2,6 +2,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import prisma from './prisma.js';
 import { randomBytes } from 'node:crypto';
 import driver from '../actions/driver.js';
+import owner from '../actions/owner.js';
 
 interface Socket {
 	id: number;
@@ -84,6 +85,7 @@ const identify = (ws: WebSocket): Promise<Socket | null> => {
 								auth
 							})
 						);
+						ws.on('message', owner.bind(null, ws));
 						resolve({
 							id,
 							ws,
