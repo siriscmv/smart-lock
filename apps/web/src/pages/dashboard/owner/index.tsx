@@ -11,12 +11,12 @@ export default function Owner() {
 				<Link href='/dashboard/owner/password' className='text-primary font-medium'>
 					Set bypass password
 				</Link>
-				{/* <Link href='/dashboard/owner/locations' className='text-primary font-medium'>
+				<Link href='/dashboard/owner/locations' className='text-primary font-medium'>
 					Locations
 				</Link>
 				<Link href='/dashboard/owner/users' className='text-primary font-medium'>
 					Users
-				</Link> */}
+				</Link>
 			</div>
 		</div>
 	);

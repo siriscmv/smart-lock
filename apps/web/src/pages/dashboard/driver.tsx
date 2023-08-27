@@ -1,4 +1,5 @@
 import Button from '@components/Button';
+import { Map } from '@components/Map';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 
@@ -18,6 +19,13 @@ export default function Driver() {
 	return (
 		<div className='flex flex-col text-center'>
 			<div className='flex flex-col text-xl'>
+				<Map
+					markers={[]}
+					center={{ lat: coords.latitude, lng: coords.longitude }}
+					zoom={20}
+					lat={coords.latitude}
+					lng={coords.longitude}
+				/>
 				<span>Your Latitude: {coords.latitude}</span>
 				<span>Your Longitude: {coords.longitude}</span>
 			</div>
