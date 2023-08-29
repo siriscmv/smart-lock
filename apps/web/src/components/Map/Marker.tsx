@@ -8,6 +8,7 @@ const Marker = ({
 	markerId,
 	onClick,
 	draggable,
+	src,
 	...props
 }: {
 	className?: string;
@@ -15,6 +16,7 @@ const Marker = ({
 	lng: number;
 	markerId: string;
 	draggable?: boolean;
+	src?: string;
 	onClick?: (
 		event: ReactMouseEvent<HTMLImageElement, MouseEvent>,
 		data: { markerId: string; lat: number; lng: number }
@@ -24,7 +26,7 @@ const Marker = ({
 		<img
 			draggable={draggable}
 			className={className}
-			src='/marker-pin.png'
+			src={src ?? '/marker-pin.png'}
 			//@ts-ignore
 			lat={lat}
 			lng={lng}

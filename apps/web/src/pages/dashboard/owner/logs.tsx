@@ -7,7 +7,6 @@ interface Data {
 	action: 'LOCKED' | 'UNLOCKED' | 'UNLOCK_REJECTED' | 'FAIL';
 	timestamp: number;
 }
-//TODO: Also show previous logs
 
 export default function Owner() {
 	const [logs, setLogs] = useState<Data[]>([]);
@@ -16,6 +15,27 @@ export default function Owner() {
 			const log = JSON.parse(msg.data);
 			if (log.op === 'ACTION_LOG') setLogs((logs) => [log.data, ...logs]);
 		};
+
+		window.ws!.addEventListener(
+			'message',
+			(msg) => {
+				const d = JSON.parse(msg.data);
+				if (d.op === 'LASTEST_ACTION_LOGS') {
+					setLogs((logs) => [...d.data, ...logs]);
+				}
+				// TODO: Handle edge cases everywhere, where another msg can be received before the one we're waiting for
+			},
+			{ once: true }
+		);
+
+		const ob = {
+			op: 'GET_LASTEST_ACTION_LOGS',
+			data: {
+				limit: 50
+			},
+			auth: window.auth
+		};
+		window.ws!.send(JSON.stringify(ob));
 	}, []);
 
 	return (
@@ -37,7 +57,7 @@ export default function Owner() {
 								<span>{log.v_id}</span>
 								<span>{log.action}</span>
 								<span>{log.distance}</span>
-								<span>{log.timestamp}</span>
+								<span>{new Date(log.timestamp).toUTCString()}</span>
 							</div>
 						);
 					})}

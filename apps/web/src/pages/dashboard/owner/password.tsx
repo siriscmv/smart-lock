@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 
 export default function Password() {
 	const [password, setPassword] = useState('');
-	const [vid, setVid] = useState<number>(0);
+	const [vid, setVid] = useState<number>(0); //TODO: Multiple single-user passwords, use proper DB
 
 	return (
 		<div className='flex flex-col text-center'>
