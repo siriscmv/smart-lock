@@ -8,11 +8,10 @@ datasource db {
 }
 
 model vehicle_locations {
-  id        Int
+  id        Int   @id @default(autoincrement())
   latitude  Float
   longitude Float
-
-  @@id([id, latitude, longitude])
+  v_id      Int
 }
 
 model drivers {

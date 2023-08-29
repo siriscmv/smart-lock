@@ -33,12 +33,12 @@ export default async function owner(ws: WebSocket, msg: string) {
 		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
 		const { lat, lng } = data.location;
-		await prisma.vehicle_locations.create({ data: { latitude: lat, longitude: lng, id: vid } });
+		await prisma.vehicle_locations.create({ data: { latitude: lat, longitude: lng, v_id: vid } });
 		ws.send(JSON.stringify({ op: op + '_SUCCESS' }));
 	} else if (op === 'GET_ALL_STOPS') {
 		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
-		const stops = await prisma.vehicle_locations.findMany({ where: { id: vid } });
+		const stops = await prisma.vehicle_locations.findMany({ where: { v_id: vid } });
 		ws.send(JSON.stringify({ op: 'ALL_STOPS', data: stops }));
 	} else if (op === 'GET_ALL_VEHICLES') {
 		const vehicles = await prisma.authorized_drivers.findMany();
