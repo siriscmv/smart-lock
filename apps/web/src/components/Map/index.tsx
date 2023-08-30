@@ -1,6 +1,7 @@
 import GoogleMap from 'google-maps-react-markers';
 import { useEffect, useRef, useState } from 'react';
 import Marker from './Marker';
+import unique from 'src/utils/unique';
 
 interface MapProps {
 	center: {
@@ -20,6 +21,9 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 	const [markers, setMarkers] = useState(initialMarkers);
 
 	useEffect(() => {
+		setMarkers((prevMarkers) => unique([...prevMarkers, ...initialMarkers], 'id'));
+	}, [initialMarkers]);
+	useEffect(() => {
 		if (!mapReady || !mapRef.current) return;
 
 		mapRef.current.addListener('click', ({ latLng }: any) => {
@@ -32,7 +36,7 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 					const data = JSON.parse(msgData);
 					if (data.op === 'UPSERT_STOP_SUCCESS') {
 						const { lat, lng, id } = data.data;
-						setMarkers((prevMarkers) => [...prevMarkers, { lat, lng, id }]);
+						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id }], 'id'));
 					}
 				},
 				{ once: true }

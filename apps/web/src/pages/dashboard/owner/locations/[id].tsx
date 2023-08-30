@@ -2,6 +2,7 @@ import { Map } from '@components/Map';
 import { useEffect, useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { useRouter } from 'next/router';
+import unique from 'src/utils/unique';
 
 export default function Owner() {
 	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
@@ -20,10 +21,9 @@ export default function Owner() {
 			(msg) => {
 				const { op, data } = JSON.parse(msg.data);
 				if (op === 'ALL_STOPS') {
-					setMarkers((prevMarkers) => [
-						...prevMarkers,
-						...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude }))
-					]);
+					setMarkers((prevMarkers) =>
+						unique([...prevMarkers, ...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude }))], 'id')
+					);
 				}
 			},
 			{ once: true }
