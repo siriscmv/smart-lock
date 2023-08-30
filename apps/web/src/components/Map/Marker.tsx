@@ -14,12 +14,12 @@ const Marker = ({
 	className?: string;
 	lat: number;
 	lng: number;
-	markerId: string;
+	markerId: number;
 	draggable?: boolean;
 	src?: string;
 	onClick?: (
 		event: ReactMouseEvent<HTMLImageElement, MouseEvent>,
-		data: { markerId: string; lat: number; lng: number }
+		data: { markerId: number; lat: number; lng: number }
 	) => unknown;
 }) => {
 	return (
@@ -31,8 +31,22 @@ const Marker = ({
 			lat={lat}
 			lng={lng}
 			onClick={(e) => (onClick ? onClick(e, { markerId, lat, lng }) : null)}
+			//@ts-ignore
+			onDragEnd={(_, { latLng }) => {
+				if (!draggable) return;
+				const lat = latLng.lat();
+				const lng = latLng.lng();
+
+				window.ws!.send(
+					JSON.stringify({
+						op: 'ADD_STOP',
+						auth: window.auth,
+						data: { location: { lat, lng, id: markerId } }
+					})
+				);
+			}}
 			style={{ cursor: 'pointer', fontSize: 40 }}
-			alt={markerId}
+			alt={markerId.toString()}
 			{...props}
 		/>
 	);

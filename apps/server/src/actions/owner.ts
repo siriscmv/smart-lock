@@ -29,12 +29,15 @@ export default async function owner(ws: WebSocket, msg: string) {
 		const limit = data.limit;
 		const logs = await prisma.logs.findMany({ take: limit, orderBy: { timestamp: 'desc' } });
 		ws.send(JSON.stringify({ op: 'LASTEST_ACTION_LOGS', data: logs }));
-	} else if (op === 'ADD_STOP') {
-		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
+	} else if (op === 'ADD_OR_UPDATE_STOP') {
+		const { lat, lng, id } = data.location;
+		if (!vid && !id) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
-		const { lat, lng } = data.location;
-		await prisma.vehicle_locations.create({ data: { latitude: lat, longitude: lng, v_id: vid } });
-		ws.send(JSON.stringify({ op: op + '_SUCCESS' }));
+		let record = null;
+		if (id) record = await prisma.vehicle_locations.update({ data: { latitude: lat, longitude: lng }, where: { id } });
+		else record = await prisma.vehicle_locations.create({ data: { latitude: lat, longitude: lng, v_id: vid } });
+
+		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: { lat, lng, id: record.id } }));
 	} else if (op === 'GET_ALL_STOPS') {
 		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 

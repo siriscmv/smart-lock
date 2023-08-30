@@ -11,7 +11,7 @@ interface MapProps {
 	lng: number;
 	zoom: number;
 	vehicleId?: number;
-	markers: { lat: number; lng: number }[];
+	markers: { lat: number; lng: number; id: number }[];
 }
 
 export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId }: MapProps) => {
@@ -26,6 +26,17 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 			const lat = latLng.lat();
 			const lng = latLng.lng();
 
+			window.ws!.addEventListener(
+				'message',
+				({ data: msgData }) => {
+					const data = JSON.parse(msgData);
+					if (data.op === 'ADD_STOP_SUCCESS') {
+						const { lat, lng, id } = data.data;
+						setMarkers((prevMarkers) => [...prevMarkers, { lat, lng, id }]);
+					}
+				},
+				{ once: true }
+			);
 			window.ws!.send(
 				JSON.stringify({
 					op: 'ADD_STOP',
@@ -33,7 +44,6 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 					data: { location: { lat, lng }, associated_vehicle: vehicleId }
 				})
 			);
-			setMarkers((prevMarkers) => [...prevMarkers, { lat, lng }]);
 		});
 	}, [mapReady, mapRef]);
 
@@ -50,9 +60,9 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 					setMapReady(true);
 				}}
 			>
-				<Marker lat={lat} lng={lng} markerId='You are here' src='/marker-pin-red.png' />
-				{markers.map((marker, index) => (
-					<Marker key={index} lat={marker.lat} lng={marker.lng} markerId={index.toString()} draggable />
+				<Marker lat={lat} lng={lng} markerId={0} src='/marker-pin-red.png' />
+				{markers.map((marker) => (
+					<Marker key={marker.id} lat={marker.lat} lng={marker.lng} markerId={marker.id} draggable />
 				))}
 			</GoogleMap>
 		</div>
