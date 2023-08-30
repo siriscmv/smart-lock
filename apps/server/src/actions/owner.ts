@@ -11,21 +11,7 @@ export default async function owner(ws: WebSocket, msg: string) {
 	const vid = data?.associated_vehicle ?? null;
 	const vehicle = Array.from(connections.values()).find((c) => c.id === vid && c.type === 'VEHICLE');
 
-	if (op === 'SET_BYPASS_PWD') {
-		if (!vehicle) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
-
-		vehicle.ws.once('message', async (msg) => {
-			const data = JSON.parse(msg.toString());
-			ws.send(JSON.stringify({ op: data.op }));
-		});
-
-		vehicle.ws.send(
-			JSON.stringify({
-				op: op,
-				password: data.password
-			})
-		);
-	} else if (op === 'GET_LASTEST_ACTION_LOGS') {
+	if (op === 'GET_LASTEST_ACTION_LOGS') {
 		const limit = data.limit;
 		const logs = await prisma.logs.findMany({ take: limit, orderBy: { timestamp: 'desc' } });
 		ws.send(JSON.stringify({ op: 'LASTEST_ACTION_LOGS', data: logs }));
@@ -46,5 +32,15 @@ export default async function owner(ws: WebSocket, msg: string) {
 	} else if (op === 'GET_ALL_VEHICLES') {
 		const vehicles = await prisma.authorized_drivers.findMany();
 		ws.send(JSON.stringify({ op: 'ALL_VEHICLES', data: vehicles.map((v) => v.v_id) }));
+	} else if (op === 'ADD_OTP') {
+		if (!vehicle) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
+
+		vehicle.ws.once('message', (msg) => ws.send(msg));
+		vehicle.ws.send(
+			JSON.stringify({
+				op: op,
+				password: data.password
+			})
+		);
 	}
 }

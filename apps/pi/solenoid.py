@@ -16,11 +16,17 @@ def lock():
 def handle_password(dbus_bytes):
     str_val = bytes([byte for byte in dbus_bytes]).decode('utf-8')
     split = str_val.split("|")
+    password, action = split[0], split[1]
     try:
-        with open("pwd", "r") as file:
-            actual_password = file.read()
-            if (actual_password != split[0]): return
+        with open("pwd", "r+") as file:
+            passwords = file.read().split("\n")
+            if password not in passwords: return
 
-            if (split[1] == "LOCK"): lock()
-            else: unlock() 
+            new_passwords = [p for p in passwords if p != password]
+            file.seek(0)
+            file.truncate()
+            file.write("\n".join(new_passwords))
+
+            if (action == "LOCK"): lock()
+            else: unlock()
     except Exception as e: print("An error occurred:", e)

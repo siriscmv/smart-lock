@@ -33,7 +33,7 @@ export default function Password() {
 				<Button
 					run={async () => {
 						const ob = {
-							op: 'SET_BYPASS_PWD',
+							op: 'ADD_OTP',
 							data: {
 								password,
 								associated_vehicle: vid
@@ -45,7 +45,7 @@ export default function Password() {
 							'message',
 							(msg) => {
 								const d = JSON.parse(msg.data);
-								if (d.op === 'SET_BYPASS_PWD_SUCCESS') toast.success('Done!');
+								if (d.op === 'ADD_OTP_SUCCESS') toast.success('Done!');
 								else toast.error('Something went wrong');
 							},
 							{ once: true }
