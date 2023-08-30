@@ -30,7 +30,7 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 				'message',
 				({ data: msgData }) => {
 					const data = JSON.parse(msgData);
-					if (data.op === 'ADD_STOP_SUCCESS') {
+					if (data.op === 'UPSERT_STOP_SUCCESS') {
 						const { lat, lng, id } = data.data;
 						setMarkers((prevMarkers) => [...prevMarkers, { lat, lng, id }]);
 					}
@@ -39,7 +39,7 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 			);
 			window.ws!.send(
 				JSON.stringify({
-					op: 'ADD_STOP',
+					op: 'UPSERT_STOP',
 					auth: window.auth,
 					data: { location: { lat, lng }, associated_vehicle: vehicleId }
 				})
@@ -62,7 +62,25 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 			>
 				<Marker lat={lat} lng={lng} markerId={0} src='/marker-pin-red.png' />
 				{markers.map((marker) => (
-					<Marker key={marker.id} lat={marker.lat} lng={marker.lng} markerId={marker.id} draggable />
+					<Marker
+						key={marker.id}
+						lat={marker.lat}
+						lng={marker.lng}
+						markerId={marker.id}
+						draggable //@ts-ignore
+						onDragEnd={(e, { latLng }) => {
+							if (!e) return;
+							const { lat, lng } = latLng;
+
+							window.ws!.send(
+								JSON.stringify({
+									op: 'UPSERT_STOP',
+									auth: window.auth,
+									data: { location: { lat, lng, id: marker.id } }
+								})
+							);
+						}}
+					/>
 				))}
 			</GoogleMap>
 		</div>

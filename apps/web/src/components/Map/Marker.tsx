@@ -22,6 +22,7 @@ const Marker = ({
 		data: { markerId: number; lat: number; lng: number }
 	) => unknown;
 }) => {
+	//TODO: Add x btn on hover
 	return (
 		<img
 			draggable={draggable}
@@ -30,21 +31,6 @@ const Marker = ({
 			//@ts-ignore
 			lat={lat}
 			lng={lng}
-			onClick={(e) => (onClick ? onClick(e, { markerId, lat, lng }) : null)}
-			//@ts-ignore
-			onDragEnd={(_, { latLng }) => {
-				if (!draggable) return;
-				const lat = latLng.lat();
-				const lng = latLng.lng();
-
-				window.ws!.send(
-					JSON.stringify({
-						op: 'ADD_STOP',
-						auth: window.auth,
-						data: { location: { lat, lng, id: markerId } }
-					})
-				);
-			}}
 			style={{ cursor: 'pointer', fontSize: 40 }}
 			alt={markerId.toString()}
 			{...props}

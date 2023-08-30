@@ -29,7 +29,7 @@ export default async function owner(ws: WebSocket, msg: string) {
 		const limit = data.limit;
 		const logs = await prisma.logs.findMany({ take: limit, orderBy: { timestamp: 'desc' } });
 		ws.send(JSON.stringify({ op: 'LASTEST_ACTION_LOGS', data: logs }));
-	} else if (op === 'ADD_OR_UPDATE_STOP') {
+	} else if (op === 'UPSERT_STOP') {
 		const { lat, lng, id } = data.location;
 		if (!vid && !id) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 

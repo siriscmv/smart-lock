@@ -20,7 +20,7 @@ export default function Owner() {
 	return (
 		<>
 			{vehicles.map((vehicle) => (
-				<Link href={`./locations/${vehicle}`} className='text-primary hover:underline'>
+				<Link key={vehicle} href={`./locations/${vehicle}`} className='text-primary hover:underline'>
 					{vehicle}
 				</Link>
 			))}

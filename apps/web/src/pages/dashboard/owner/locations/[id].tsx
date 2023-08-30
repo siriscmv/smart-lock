@@ -12,7 +12,7 @@ export default function Owner() {
 		userDecisionTimeout: 15_000
 	});
 	const router = useRouter();
-	const [markers, setMarkers] = useState<{ lat: number; lng: number }[]>([]);
+	const [markers, setMarkers] = useState<{ lat: number; lng: number; id: number }[]>([]);
 
 	useEffect(() => {
 		window.ws!.addEventListener(
@@ -20,7 +20,10 @@ export default function Owner() {
 			(msg) => {
 				const { op, data } = JSON.parse(msg.data);
 				if (op === 'ALL_STOPS') {
-					setMarkers((prevMarkers) => [...prevMarkers, ...data]);
+					setMarkers((prevMarkers) => [
+						...prevMarkers,
+						...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude }))
+					]);
 				}
 			},
 			{ once: true }
