@@ -1,4 +1,4 @@
-import prisma from './prisma';
+import prisma from './prisma.js';
 
 (async () => {
 	await prisma.authorized_drivers.create({ data: { v_id: 3001, d_id: 1001 } });
