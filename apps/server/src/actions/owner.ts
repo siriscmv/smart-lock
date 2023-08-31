@@ -24,6 +24,11 @@ export default async function owner(ws: WebSocket, msg: string) {
 		else record = await prisma.vehicle_locations.create({ data: { latitude: lat, longitude: lng, v_id: vid } });
 
 		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: { lat, lng, id: record.id } }));
+	} else if (op === 'REMOVE_STOP') {
+		const { id } = data.location;
+
+		await prisma.vehicle_locations.delete({ where: { id } });
+		ws.send(JSON.stringify({ op: op + '_SUCCESS' }));
 	} else if (op === 'GET_ALL_STOPS') {
 		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 

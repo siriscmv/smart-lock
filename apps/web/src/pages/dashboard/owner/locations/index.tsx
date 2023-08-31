@@ -27,5 +27,3 @@ export default function Owner() {
 		</>
 	);
 }
-
-//TODO: Add selectable list of vehicles

@@ -13,16 +13,23 @@ interface MapProps {
 	zoom: number;
 	vehicleId?: number;
 	markers: { lat: number; lng: number; id: number }[];
+	setCurrentlyHoveredMarker: any; //TODO: Fix types + remove ts ignores
+	setMarkers: any;
 }
 
-export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId }: MapProps) => {
+export const Map = ({
+	center,
+	zoom,
+	lat,
+	lng,
+	markers,
+	vehicleId,
+	setCurrentlyHoveredMarker,
+	setMarkers
+}: MapProps) => {
 	const mapRef = useRef<any>(null);
 	const [mapReady, setMapReady] = useState(false);
-	const [markers, setMarkers] = useState(initialMarkers);
 
-	useEffect(() => {
-		setMarkers((prevMarkers) => unique([...prevMarkers, ...initialMarkers], 'id'));
-	}, [initialMarkers]);
 	useEffect(() => {
 		if (!mapReady || !mapRef.current) return;
 
@@ -36,6 +43,7 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 					const data = JSON.parse(msgData);
 					if (data.op === 'UPSERT_STOP_SUCCESS') {
 						const { lat, lng, id } = data.data;
+						//@ts-ignore
 						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id }], 'id'));
 					}
 				},
@@ -70,7 +78,9 @@ export const Map = ({ center, zoom, lat, lng, markers: initialMarkers, vehicleId
 						key={marker.id}
 						lat={marker.lat}
 						lng={marker.lng}
-						markerId={marker.id}
+						markerId={marker.id} //@ts-ignore
+						onMouseEnter={() => setCurrentlyHoveredMarker(marker.id)}
+						onMouseLeave={() => setCurrentlyHoveredMarker(null)}
 						draggable //@ts-ignore
 						onDragEnd={(e, { latLng }) => {
 							if (!e) return;
