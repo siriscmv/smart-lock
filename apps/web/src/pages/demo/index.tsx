@@ -10,10 +10,14 @@ export default function Demo() {
 		positionOptions: {
 			enableHighAccuracy: true
 		},
-		watchPosition: true,
+		watchPosition: false,
 		userDecisionTimeout: 15_000
 	});
+	const [latLng, setLatLng] = useState({ lat: 0, lng: 0 });
 
+	useEffect(() => {
+		if (coords) setLatLng({ lat: coords.latitude, lng: coords.longitude });
+	}, [coords]);
 	useEffect(() => {
 		if (!window.ws) window.ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL!);
 		window.ws.onopen = () => {
@@ -38,12 +42,13 @@ export default function Demo() {
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
 					<Map
+						setDemoCoords={setLatLng}
 						markers={markers}
 						setMarkers={setMarkers}
-						center={{ lat: coords.latitude, lng: coords.longitude }}
+						center={latLng}
 						zoom={20}
-						lat={coords.latitude}
-						lng={coords.longitude}
+						lat={latLng.lat}
+						lng={latLng.lng}
 					/>
 				</div>
 				<span className='font-bold'>Note: This view combines both driver and owner view for showcase purposes</span>
@@ -70,8 +75,8 @@ export default function Demo() {
 										JSON.stringify({
 											op: `REQUEST_${b.toUpperCase()}`,
 											data: {
-												lat: coords.latitude,
-												lon: coords.longitude,
+												lat: latLng.lat,
+												lon: latLng.lng,
 												isDemo: true
 											}
 										})

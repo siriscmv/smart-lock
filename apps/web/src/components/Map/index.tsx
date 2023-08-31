@@ -15,6 +15,7 @@ interface MapProps {
 	markers: { lat: number; lng: number; id: number }[] | null;
 	setCurrentlyHoveredMarker?: any; //TODO: Fix types + remove ts ignores
 	setMarkers?: any;
+	setDemoCoords?: any;
 }
 
 export const Map = ({
@@ -25,7 +26,8 @@ export const Map = ({
 	markers,
 	vehicleId,
 	setCurrentlyHoveredMarker,
-	setMarkers
+	setMarkers,
+	setDemoCoords
 }: MapProps) => {
 	const mapRef = useRef<any>(null);
 	const [mapReady, setMapReady] = useState(false);
@@ -76,7 +78,18 @@ export const Map = ({
 					setMapReady(true);
 				}}
 			>
-				<Marker lat={lat} lng={lng} markerId={0} src='/marker-pin-red.png' />
+				<Marker
+					lat={lat}
+					lng={lng}
+					markerId={0}
+					src='/marker-pin-red.png'
+					draggable={setDemoCoords !== undefined}
+					//@ts-ignore
+					onDragEnd={(e, { latLng }) => {
+						if (!e || setDemoCoords === undefined) return;
+						setDemoCoords(latLng);
+					}}
+				/>
 				{markers?.map((marker) => (
 					<Marker
 						key={marker.id}
