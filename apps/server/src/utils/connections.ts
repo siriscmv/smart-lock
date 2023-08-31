@@ -3,6 +3,7 @@ import prisma from './prisma.js';
 import { randomBytes } from 'node:crypto';
 import driver from '../actions/driver.js';
 import owner from '../actions/owner.js';
+import demo from '../actions/demo.js';
 
 interface Socket {
 	id: number;
@@ -93,6 +94,14 @@ const identify = (ws: WebSocket): Promise<Socket | null> => {
 							auth
 						});
 					}
+				} else if (type === 'DEMO') {
+					await prisma.demo_locations.deleteMany();
+					ws.send(
+						JSON.stringify({
+							OP: 'IDENTIFY_OK'
+						})
+					);
+					ws.on('message', demo.bind(null, ws));
 				} else resolve(null);
 			} catch (_) {
 				resolve(null);

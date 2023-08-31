@@ -7,6 +7,7 @@ export default function Home() {
 			<div className='flex flex-row items-center justify-center'>
 				<Button href='/login/owner' text='Owner' />
 				<Button href='/login/driver' text='Driver' />
+				<Button href='/demo' text='Demo' />
 			</div>
 		</div>
 	);

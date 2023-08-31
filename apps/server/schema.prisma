@@ -14,6 +14,13 @@ model vehicle_locations {
   v_id      Int
 }
 
+model demo_locations {
+  id        Int   @id @default(autoincrement())
+  latitude  Float
+  longitude Float
+  v_id      Int
+}
+
 model drivers {
   id       Int    @id @default(autoincrement())
   username String @unique

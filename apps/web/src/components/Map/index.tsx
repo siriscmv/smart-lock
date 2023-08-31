@@ -12,9 +12,9 @@ interface MapProps {
 	lng: number;
 	zoom: number;
 	vehicleId?: number;
-	markers: { lat: number; lng: number; id: number }[];
-	setCurrentlyHoveredMarker: any; //TODO: Fix types + remove ts ignores
-	setMarkers: any;
+	markers: { lat: number; lng: number; id: number }[] | null;
+	setCurrentlyHoveredMarker?: any; //TODO: Fix types + remove ts ignores
+	setMarkers?: any;
 }
 
 export const Map = ({
@@ -29,10 +29,14 @@ export const Map = ({
 }: MapProps) => {
 	const mapRef = useRef<any>(null);
 	const [mapReady, setMapReady] = useState(false);
+	const [init, setInit] = useState(false);
 
 	useEffect(() => {
 		if (!mapReady || !mapRef.current) return;
+		if (markers === null) return;
+		if (init) return;
 
+		setInit(true);
 		mapRef.current.addListener('click', ({ latLng }: any) => {
 			const lat = latLng.lat();
 			const lng = latLng.lng();
@@ -57,7 +61,7 @@ export const Map = ({
 				})
 			);
 		});
-	}, [mapReady, mapRef]);
+	}, [mapReady, mapRef, markers]);
 
 	return (
 		<div style={{ height: '75vh', width: '75vw' }}>
@@ -73,19 +77,33 @@ export const Map = ({
 				}}
 			>
 				<Marker lat={lat} lng={lng} markerId={0} src='/marker-pin-red.png' />
-				{markers.map((marker) => (
+				{markers?.map((marker) => (
 					<Marker
 						key={marker.id}
 						lat={marker.lat}
 						lng={marker.lng}
 						markerId={marker.id} //@ts-ignore
-						onMouseEnter={() => setCurrentlyHoveredMarker(marker.id)}
-						onMouseLeave={() => setCurrentlyHoveredMarker(null)}
+						onMouseEnter={() => setCurrentlyHoveredMarker?.(marker.id)}
+						onMouseLeave={() => setCurrentlyHoveredMarker?.(null)}
 						draggable //@ts-ignore
 						onDragEnd={(e, { latLng }) => {
 							if (!e) return;
 							const { lat, lng } = latLng;
 
+							window.ws!.addEventListener(
+								'message',
+								({ data: msgData }) => {
+									const data = JSON.parse(msgData);
+									if (data.op === 'UPSERT_STOP_SUCCESS') {
+										const { lat, lng, id } = data.data;
+										//@ts-ignore
+										setMarkers((prevMarkers) =>
+											unique([...prevMarkers.filter((p: any) => p.id !== id), { lat, lng, id }], 'id')
+										);
+									}
+								},
+								{ once: true }
+							);
 							window.ws!.send(
 								JSON.stringify({
 									op: 'UPSERT_STOP',
