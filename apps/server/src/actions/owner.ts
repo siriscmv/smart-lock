@@ -47,6 +47,9 @@ export default async function owner(ws: WebSocket, msg: string) {
 				password: data.password
 			})
 		);
+	} else if (op === 'GET_DRIVERS') {
+		const drivers = await prisma.authorized_drivers.findMany();
+		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: drivers.map((d) => ({ driver: d.d_id, vehicle: d.v_id })) }));
 	} else if (op === 'ADD_DRIVER') {
 		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
