@@ -7,7 +7,6 @@ export default async function owner(ws: WebSocket, msg: string) {
 
 	const owner = Array.from(connections.values()).find((c) => c.auth === auth && c.type === 'OWNER');
 	if (!owner) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
-
 	const vid = data?.associated_vehicle ?? null;
 	const vehicle = Array.from(connections.values()).find((c) => c.id === vid && c.type === 'VEHICLE');
 

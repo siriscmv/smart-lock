@@ -48,7 +48,7 @@ const identify = (ws: WebSocket): Promise<Socket | string | null> => {
 		ws.once('message', async (raw) => {
 			try {
 				const data = JSON.parse(raw.toString());
-				if (data.auth.length > 1) return resolve(data.auth);
+				if (data.auth?.length > 1) return resolve(data.auth);
 				if (data.op !== 'IDENTIFY') return resolve(null);
 
 				const { id, type, username, password, associated_vehicle } = data.data;

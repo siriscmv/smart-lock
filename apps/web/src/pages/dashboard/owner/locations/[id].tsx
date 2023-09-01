@@ -65,7 +65,7 @@ export default function Owner() {
 						<span>{marker.lat.toFixed(4)}</span>
 						<span>{marker.lng.toFixed(4)}</span>
 						<button
-							className='text-danger font-black'
+							className='text-danger font-black cursor-pointer'
 							onClick={() => {
 								window.ws!.addEventListener(
 									'message',
