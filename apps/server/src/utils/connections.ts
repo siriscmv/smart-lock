@@ -19,19 +19,36 @@ export default connections;
 export const wss = new WebSocketServer({ port: parseInt(process.env.WEBSOCKET_PORT!) });
 
 wss.on('connection', async (ws: WebSocket) => {
-	const socket = await identify(ws);
+	const result = await identify(ws);
 
-	if (socket) {
-		connections.set(socket.id, socket);
-		console.log(`Client ${socket.id} connected`);
+	if (typeof result === 'string') {
+		// FE has broken and created a new socket connection with same creds
+		for (const connection of connections.entries()) {
+			if (connection[1].auth === result) {
+				switch (connection[1].type) {
+					case 'DRIVER':
+						ws.on('message', driver.bind(null, ws));
+						break;
+					case 'OWNER':
+						ws.on('message', owner.bind(null, ws));
+						break;
+					case 'VEHICLE':
+						break;
+				}
+			}
+		}
+	} else if (result !== null) {
+		connections.set(result.id, result);
+		console.log(`Client ${result.id} connected`);
 	} else console.error('Client did not identify itself');
 });
 
-const identify = (ws: WebSocket): Promise<Socket | null> => {
+const identify = (ws: WebSocket): Promise<Socket | string | null> => {
 	return new Promise((resolve) => {
 		ws.once('message', async (raw) => {
 			try {
 				const data = JSON.parse(raw.toString());
+				if (data.auth.length > 1) return resolve(data.auth);
 				if (data.op !== 'IDENTIFY') return resolve(null);
 
 				const { id, type, username, password, associated_vehicle } = data.data;
