@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import '../styles/nprogress.css';
+import 'node_modules/smalltalk/css/smalltalk.css';
 import type { AppProps } from 'next/app';
 import Router from 'next/router';
 import Font from 'next/font/local';
