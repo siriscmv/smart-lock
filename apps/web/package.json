@@ -24,7 +24,6 @@
 		"google-maps-react-markers": "^1.4.2",
 		"next": "13.2.3",
 		"next-pwa": "^5.6.0",
-		"next-remove-imports": "^1.0.12",
 		"nprogress": "^0.2.0",
 		"prisma": "^4.11.0",
 		"prop-types": "^15.8.1",
@@ -32,7 +31,6 @@
 		"react-dom": "18.2.0",
 		"react-geolocated": "^4.0.3",
 		"react-hot-toast": "^2.4.0",
-		"smalltalk": "^4.1.1",
 		"typescript": "4.9.5",
 		"ws": "^8.12.1"
 	},

@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import unique from 'src/utils/unique'; //@ts-ignore
-import smalltalk from 'node_modules/smalltalk/lib/smalltalk';
-
-const prompt = async (title: string, question: string) => {
-	try {
-		return await smalltalk.prompt(title, question);
-	} catch {
-		return '';
-	}
-};
+import unique from 'src/utils/unique';
 
 export default function Owner() {
 	const [drivers, setDrivers] = useState<{ driver: number; vehicle: number }[]>([]);
@@ -37,8 +28,8 @@ export default function Owner() {
 						<span>{driver.vehicle}</span>
 						<span
 							className='text-primary cursor-pointer'
-							onClick={async () => {
-								const newVehicle = parseInt((await prompt('Editing Driver', 'Enter new vehicle id')) ?? '');
+							onClick={() => {
+								const newVehicle = parseInt(window.prompt('Enter new vehicle id') ?? '');
 								if (isNaN(newVehicle)) return;
 
 								setDrivers((drivers) =>
@@ -81,10 +72,10 @@ export default function Owner() {
 			</div>
 			<span
 				className='mt-4 text-primary cursor-pointer'
-				onClick={async () => {
-					const username = await prompt('New User', 'Enter username:');
-					const password = await prompt('New User', 'Enter password:');
-					const associated_vehicle = parseInt((await prompt('New User', 'Enter vehicle ID:')) ?? '');
+				onClick={() => {
+					const username = window.prompt('Enter username:');
+					const password = window.prompt('Enter password:');
+					const associated_vehicle = parseInt(window.prompt('Enter vehicle ID:') ?? '');
 					if (isNaN(associated_vehicle)) return;
 
 					window.ws!.addEventListener(
