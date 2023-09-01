@@ -47,5 +47,25 @@ export default async function owner(ws: WebSocket, msg: string) {
 				password: data.password
 			})
 		);
+	} else if (op === 'ADD_DRIVER') {
+		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
+
+		const { username, password } = data;
+		const driver = await prisma.drivers.create({ data: { username, password } });
+		await prisma.authorized_drivers.create({ data: { v_id: vid, d_id: driver.id } });
+
+		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: driver }));
+	} else if (op === 'DELETE_DRIVER') {
+		const { id } = data;
+		await prisma.drivers.delete({ where: { id } });
+		await prisma.authorized_drivers.deleteMany({ where: { d_id: id } });
+
+		ws.send(JSON.stringify({ op: op + '_SUCCESS' }));
+	} else if (op === 'EDIT_DRIVER') {
+		if (!vid) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
+		const { id } = data;
+		await prisma.authorized_drivers.updateMany({ where: { d_id: id }, data: { v_id: vid } });
+
+		ws.send(JSON.stringify({ op: op + '_SUCCESS' }));
 	}
 }
