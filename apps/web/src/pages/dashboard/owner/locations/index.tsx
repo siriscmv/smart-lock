@@ -14,16 +14,19 @@ export default function Owner() {
 			},
 			{ once: true }
 		);
-		window.ws!.send(JSON.stringify({ op: 'GET_ALL_VEHICLES', auth: window.auth }));
+		window.ws!.send(JSON.stringify({ op: 'GET_ALL_VEHICLES', auth: localStorage.getItem('auth') }));
 	}, []);
 
 	return (
-		<>
-			{vehicles.map((vehicle) => (
-				<Link key={vehicle} href={`./locations/${vehicle}`} className='text-primary hover:underline'>
-					{vehicle}
-				</Link>
-			))}
-		</>
+		<div className='flex flex-col'>
+			<span>Choose a vehicle</span>
+			<div className='flex flex-col'>
+				{vehicles.map((vehicle) => (
+					<Link key={vehicle} href={`./locations/${vehicle}`} className='text-primary hover:underline'>
+						{vehicle}
+					</Link>
+				))}
+			</div>
+		</div>
 	);
 }

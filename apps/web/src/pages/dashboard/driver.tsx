@@ -56,7 +56,7 @@ export default function Driver() {
 												lat: coords.latitude,
 												lon: coords.longitude
 											},
-											auth: window.auth
+											auth: localStorage.getItem('auth')
 										})
 									);
 								}),

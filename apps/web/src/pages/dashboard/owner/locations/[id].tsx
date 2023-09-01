@@ -32,7 +32,7 @@ export default function Owner() {
 		window.ws!.send(
 			JSON.stringify({
 				op: 'GET_ALL_STOPS',
-				auth: window.auth,
+				auth: localStorage.getItem('auth'),
 				data: { associated_vehicle: parseInt(router.query.id as string) }
 			})
 		);
@@ -80,7 +80,7 @@ export default function Owner() {
 								window.ws!.send(
 									JSON.stringify({
 										op: 'REMOVE_STOP',
-										auth: window.auth,
+										auth: localStorage.getItem('auth'),
 										data: { location: { id: marker.id } }
 									})
 								);

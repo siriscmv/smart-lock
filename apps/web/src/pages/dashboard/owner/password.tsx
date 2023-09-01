@@ -38,7 +38,7 @@ export default function Password() {
 								password,
 								associated_vehicle: vid
 							},
-							auth: window.auth
+							auth: localStorage.getItem('auth')
 						};
 
 						window.ws?.addEventListener(

@@ -76,7 +76,7 @@ const Auth = (props: AuthProps) => {
 								toast.error('Failed to login');
 								return;
 							}
-							window.auth = d.auth;
+							localStorage.setItem('auth', d.auth);
 							router.push(`/dashboard/${props.type.toLowerCase()}`);
 						},
 						{ once: true }

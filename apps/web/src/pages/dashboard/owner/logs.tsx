@@ -33,7 +33,7 @@ export default function Owner() {
 			data: {
 				limit: 50
 			},
-			auth: window.auth
+			auth: localStorage.getItem('auth')
 		};
 		window.ws!.send(JSON.stringify(ob));
 	}, []);

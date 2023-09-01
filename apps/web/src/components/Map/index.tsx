@@ -58,7 +58,7 @@ export const Map = ({
 			window.ws!.send(
 				JSON.stringify({
 					op: 'UPSERT_STOP',
-					auth: window.auth,
+					auth: localStorage.getItem('auth'),
 					data: { location: { lat, lng }, associated_vehicle: vehicleId }
 				})
 			);
@@ -120,7 +120,7 @@ export const Map = ({
 							window.ws!.send(
 								JSON.stringify({
 									op: 'UPSERT_STOP',
-									auth: window.auth,
+									auth: localStorage.getItem('auth'),
 									data: { location: { lat, lng, id: marker.id } }
 								})
 							);
