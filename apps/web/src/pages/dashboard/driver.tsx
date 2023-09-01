@@ -1,5 +1,6 @@
 import Button from '@components/Button';
 import { Map } from '@components/Map';
+import { useEffect, useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 
@@ -8,9 +9,14 @@ export default function Driver() {
 		positionOptions: {
 			enableHighAccuracy: true
 		},
-		watchPosition: true,
+		watchPosition: false,
 		userDecisionTimeout: 15_000
 	});
+	const [latLng, setLatLng] = useState({ lat: 0, lng: 0 });
+
+	useEffect(() => {
+		if (coords) setLatLng({ lat: coords.latitude, lng: coords.longitude });
+	}, [coords]);
 
 	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
 	if (!isGeolocationAvailable || !coords)
@@ -20,13 +26,7 @@ export default function Driver() {
 		<div className='flex flex-col text-center'>
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
-					<Map
-						markers={null}
-						center={{ lat: coords.latitude, lng: coords.longitude }}
-						zoom={20}
-						lat={coords.latitude}
-						lng={coords.longitude}
-					/>
+					<Map setDemoCoords={setLatLng} markers={null} center={latLng} zoom={20} lat={latLng.lat} lng={latLng.lng} />
 				</div>
 				<span>Your Latitude: {coords.latitude}</span>
 				<span>Your Longitude: {coords.longitude}</span>
