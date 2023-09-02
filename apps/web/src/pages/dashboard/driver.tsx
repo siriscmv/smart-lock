@@ -26,15 +26,7 @@ export default function Driver() {
 		<div className='flex flex-col text-center'>
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
-					<Map
-						aggressiveDemo
-						setDemoCoords={setLatLng}
-						markers={null}
-						center={latLng}
-						zoom={20}
-						lat={latLng.lat}
-						lng={latLng.lng}
-					/>
+					<Map setDemoCoords={setLatLng} markers={null} center={latLng} zoom={20} lat={latLng.lat} lng={latLng.lng} />
 				</div>
 				<span>Your Latitude: {latLng.lat}</span>
 				<span>Your Longitude: {latLng.lng}</span>
