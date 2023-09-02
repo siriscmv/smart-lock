@@ -39,7 +39,7 @@ export default async function owner(ws: WebSocket, msg: string) {
 	} else if (op === 'ADD_OTP') {
 		if (!vehicle) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
-		vehicle.ws.once('message', (msg) => ws.send(msg));
+		vehicle.ws.once('message', (msg) => ws.send(msg.toString()));
 		vehicle.ws.send(
 			JSON.stringify({
 				op: op,

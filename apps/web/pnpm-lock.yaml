@@ -51,8 +51,8 @@ dependencies:
     specifier: ^2.4.0
     version: 2.4.0(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
   siriscmv-gmrm:
-    specifier: ^1.4.2
-    version: 1.4.2(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^1.4.3
+    version: 1.4.3(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0)
   typescript:
     specifier: 4.9.5
     version: 4.9.5
@@ -159,7 +159,7 @@ packages:
       '@babel/helper-compilation-targets': 7.22.10
       '@babel/helper-module-transforms': 7.22.9(@babel/core@7.22.11)
       '@babel/helpers': 7.22.11
-      '@babel/parser': 7.22.13
+      '@babel/parser': 7.22.14
       '@babel/template': 7.22.5
       '@babel/traverse': 7.22.11
       '@babel/types': 7.22.11
@@ -443,8 +443,8 @@ packages:
       '@babel/types': 7.22.11
     dev: false
 
-  /@babel/parser@7.22.13:
-    resolution: {integrity: sha512-3l6+4YOvc9wx7VlCSw4yQfcBo01ECA8TicQfbnCPuCEpRQrf+gTUyGdxNw+pyTUyywp6JRD1w0YQs9TpBXYlkw==}
+  /@babel/parser@7.22.14:
+    resolution: {integrity: sha512-1KucTHgOvaw/LzCVrEOAyXkr9rQlp0A1HiHRYnSUE9dmb8PvPW7o5sscg+5169r54n3vGlbx6GevTE/Iw/P3AQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
@@ -1367,7 +1367,7 @@ packages:
       '@babel/helper-function-name': 7.22.5
       '@babel/helper-hoist-variables': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/parser': 7.22.13
+      '@babel/parser': 7.22.14
       '@babel/types': 7.22.11
       debug: 4.3.4
       globals: 11.12.0
@@ -3684,7 +3684,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.10
     dev: false
 
   /jsonpointer@5.0.1:
@@ -4652,8 +4652,8 @@ packages:
       get-intrinsic: 1.2.0
       object-inspect: 1.12.3
 
-  /siriscmv-gmrm@1.4.2(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-P0pXAXayb8v+k0bX2T7np8PJ9WNzSt2xVOPnoQI4YL3ruV2wCzoLYU+KvlcDcLGZ+ZXC/TifnXsAi3AUW17x9Q==}
+  /siriscmv-gmrm@1.4.3(@babel/core@7.22.11)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-XWUHz4tbn1DN7RdUTBncAJmm2hhYqP63l2dXYgvb2fPuS6roHkCrEPOHLZFZ2Hfl2wkSMAwE1GpICVSVPbLJVA==}
     engines: {node: '>=16'}
     peerDependencies:
       react: ^18.0.0
