@@ -55,9 +55,14 @@ export default function Owner() {
 				lng={coords.longitude}
 			/>
 			<div className='flex flex-col items-center mt-6'>
+				<div className={'grid grid-cols-4 grid-rows-1 w-[50vw] underline'}>
+					<span>ID</span>
+					<span>LAT</span>
+					<span>LON</span>
+				</div>
 				{markers.map((marker) => (
 					<div
-						className={`flex flex-row space-x-4 items-center ${
+						className={`grid grid-cols-4 grid-rows-1 w-[50vw] ${
 							currentlyHoveredMarker === marker.id ? 'text-primary' : 'text-white'
 						}`}
 					>
@@ -65,7 +70,7 @@ export default function Owner() {
 						<span>{marker.lat.toFixed(4)}</span>
 						<span>{marker.lng.toFixed(4)}</span>
 						<button
-							className='text-danger font-black cursor-pointer'
+							className='text-danger font-black cursor-pointer hover:underline'
 							onClick={() => {
 								window.ws!.addEventListener(
 									'message',

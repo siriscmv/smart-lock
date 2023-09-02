@@ -22,12 +22,16 @@ export default function Owner() {
 		<div className='flex flex-col'>
 			<span>Drivers</span>
 			<div className='flex flex-col items-center'>
+				<div className='grid grid-cols-4 grid-rows-1 w-[50vw] underline'>
+					<span>Driver ID</span>
+					<span>Vehicle ID</span>
+				</div>
 				{drivers.map((driver) => (
-					<div className='flex flex-row items-center space-x-4'>
+					<div key={driver.driver} className='grid grid-cols-4 grid-rows-1 w-[50vw]'>
 						<span>{driver.driver}</span>
 						<span>{driver.vehicle}</span>
 						<span
-							className='text-primary cursor-pointer'
+							className='text-primary cursor-pointer hover:underline'
 							onClick={() => {
 								const newVehicle = parseInt(window.prompt('Enter new vehicle id') ?? '');
 								if (isNaN(newVehicle)) return;
@@ -63,7 +67,7 @@ export default function Owner() {
 									})
 								);
 							}}
-							className='font-bold text-danger cursor-pointer'
+							className='font-bold text-danger cursor-pointer hover:underline'
 						>
 							X
 						</span>
@@ -71,7 +75,7 @@ export default function Owner() {
 				))}
 			</div>
 			<span
-				className='mt-4 text-primary cursor-pointer'
+				className='mt-4 text-primary cursor-pointer hover:underline'
 				onClick={() => {
 					const username = window.prompt('Enter username:');
 					const password = window.prompt('Enter password:');
