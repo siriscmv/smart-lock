@@ -1,4 +1,4 @@
-import GoogleMap from 'google-maps-react-markers';
+import GoogleMap from 'siriscmv-gmrm';
 import { useEffect, useRef, useState } from 'react';
 import Marker from './Marker';
 import unique from 'src/utils/unique';
