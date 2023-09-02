@@ -16,6 +16,7 @@ interface MapProps {
 	setCurrentlyHoveredMarker?: any; //TODO: Fix types + remove ts ignores
 	setMarkers?: any;
 	setDemoCoords?: any;
+	aggressiveDemo?: boolean;
 }
 
 export const Map = ({
@@ -27,7 +28,8 @@ export const Map = ({
 	vehicleId,
 	setCurrentlyHoveredMarker,
 	setMarkers,
-	setDemoCoords
+	setDemoCoords,
+	aggressiveDemo
 }: MapProps) => {
 	const mapRef = useRef<any>(null);
 	const [mapReady, setMapReady] = useState(false);
@@ -85,7 +87,14 @@ export const Map = ({
 					src='/marker-pin-red.png'
 					draggable={setDemoCoords !== undefined}
 					//@ts-ignore
+					onDrag={(e, { latLng }) => {
+						if (!aggressiveDemo) return;
+						if (!e || setDemoCoords === undefined) return;
+						setDemoCoords(latLng);
+					}}
+					//@ts-ignore
 					onDragEnd={(e, { latLng }) => {
+						if (aggressiveDemo) return;
 						if (!e || setDemoCoords === undefined) return;
 						setDemoCoords(latLng);
 					}}
