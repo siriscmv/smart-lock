@@ -66,7 +66,7 @@ export const Map = ({
 	}, [mapReady, mapRef, markers]);
 
 	return (
-		<div style={{ height: '75vh', width: '75vw' }}>
+		<div className='md:w-[75vw] w-[90vw] h-[75vh]'>
 			<GoogleMap
 				apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 				bootstrapURLKeys={{ key: '' }}
