@@ -4,13 +4,14 @@ import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 
 export default function Driver() {
-	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+	const { _coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
 		positionOptions: {
 			enableHighAccuracy: true
 		},
 		watchPosition: true,
 		userDecisionTimeout: 15_000
 	});
+	const [coords, setCoords] = useState(_coords);
 
 	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
 	if (!isGeolocationAvailable || !coords)
@@ -21,6 +22,7 @@ export default function Driver() {
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
 					<Map
+						setDemoCoords={setCoords}
 						markers={null}
 						center={{ lat: coords.latitude, lng: coords.longitude }}
 						zoom={20}
