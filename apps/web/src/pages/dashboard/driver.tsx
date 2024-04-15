@@ -2,6 +2,7 @@ import Button from '@components/Button';
 import { Map } from '@components/Map';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
+import { useState } from 'react';
 
 export default function Driver() {
 	const { coords: _coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
