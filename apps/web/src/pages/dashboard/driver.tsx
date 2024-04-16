@@ -5,18 +5,14 @@ import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 
 export default function Driver() {
-	const {
-		coords: _coords,
-		isGeolocationAvailable,
-		isGeolocationEnabled
-	} = useGeolocated({
+	const { coords: _coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
 		positionOptions: {
 			enableHighAccuracy: true
 		},
-		watchPosition: false,
+		watchPosition: true,
 		userDecisionTimeout: 15_000
 	});
-	const [coords, setCoords] = useState({ lat: _coords?.latitude ?? 0, lng: _coords?.longitude ?? 0 });
+	const [coords, setCoords] = useState(_coords);
 
 	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
 	if (!isGeolocationAvailable || !coords)
@@ -28,16 +24,15 @@ export default function Driver() {
 				<div className='mb-6'>
 					<Map
 						setDemoCoords={setCoords}
-						markers={[]}
-						setMarkers={() => {}}
-						center={coords}
+						markers={null}
+						center={{ lat: coords.latitude, lng: coords.longitude }}
 						zoom={20}
-						lat={coords.lat}
-						lng={coords.lng}
+						lat={coords.latitude}
+						lng={coords.longitude}
 					/>
 				</div>
-				<span>Your Latitude: {coords.lat}</span>
-				<span>Your Longitude: {coords.lng}</span>
+				<span>Your Latitude: {coords.latitude}</span>
+				<span>Your Longitude: {coords.longitude}</span>
 			</div>
 			<div className='flex flex-row justify-center'>
 				{['Lock', 'Unlock'].map((b) => (
@@ -61,8 +56,8 @@ export default function Driver() {
 										JSON.stringify({
 											op: `REQUEST_${b.toUpperCase()}`,
 											data: {
-												lat: coords.lat,
-												lon: coords.lng
+												lat: coords.latitude,
+												lon: coords.longitude
 											},
 											auth: localStorage.getItem('auth')
 										})
