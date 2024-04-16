@@ -4,7 +4,7 @@ import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 
 export default function Driver() {
-	const { coords: _coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+	const { _coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
 		positionOptions: {
 			enableHighAccuracy: true
 		},
