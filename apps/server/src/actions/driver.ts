@@ -1,7 +1,7 @@
 import connections from '../utils/connections.js';
 import type WebSocket from 'ws';
 import prisma from '../utils/prisma.js';
-import log, { Data } from '../utils/log.js';
+import log from '../utils/log.js';
 import { getDistance, humanize } from '../utils/distance.js';
 
 export default async function driver(ws: WebSocket, msg: string) {
