@@ -15,7 +15,9 @@ export default async function owner(ws: WebSocket, msg: string) {
 		const logs = await prisma.logs.findMany({ take: limit, orderBy: { timestamp: 'desc' } });
 		ws.send(JSON.stringify({ op: 'LASTEST_ACTION_LOGS', data: logs }));
 	} else if (op === 'UPSERT_STOP') {
-		const { lat, lng, name, id } = data.location;
+		const { lat, lng, id } = data.location;
+		const name = data.name;
+
 		if (!vid && !id) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
 		let record = null;
@@ -25,7 +27,7 @@ export default async function owner(ws: WebSocket, msg: string) {
 				data: { latitude: lat, longitude: lng, name: name ?? '', v_id: vid }
 			});
 
-		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: { lat, lng, id: record.id } }));
+		ws.send(JSON.stringify({ op: op + '_SUCCESS', data: { name: record.name, lat, lng, id: record.id } }));
 	} else if (op === 'REMOVE_STOP') {
 		const { id } = data.location;
 

@@ -13,7 +13,7 @@ export default function Owner() {
 		userDecisionTimeout: 15_000
 	});
 	const router = useRouter();
-	const [markers, setMarkers] = useState<{ lat: number; lng: number; id: number }[]>([]);
+	const [markers, setMarkers] = useState<{ lat: number; lng: number; id: number; name: string }[]>([]);
 	const [currentlyHoveredMarker, setCurrentlyHoveredMarker] = useState<number | null>(null);
 
 	useEffect(() => {
@@ -23,7 +23,13 @@ export default function Owner() {
 				const { op, data } = JSON.parse(msg.data);
 				if (op === 'ALL_STOPS') {
 					setMarkers((prevMarkers) =>
-						unique([...prevMarkers, ...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude }))], 'id')
+						unique(
+							[
+								...prevMarkers,
+								...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude, name: d.name }))
+							],
+							'id'
+						)
 					);
 				}
 			},
@@ -57,6 +63,7 @@ export default function Owner() {
 			<div className='flex flex-col items-center mt-6'>
 				<div className={'grid grid-cols-4 grid-rows-1 w-[50vw] underline'}>
 					<span>ID</span>
+					<span>Name</span>
 					<span>LAT</span>
 					<span>LON</span>
 				</div>
@@ -67,6 +74,7 @@ export default function Owner() {
 						}`}
 					>
 						<span>{marker.id}</span>
+						<span>{marker.name}</span>
 						<span>{marker.lat.toFixed(4)}</span>
 						<span>{marker.lng.toFixed(4)}</span>
 						<button

@@ -48,15 +48,16 @@ export const Map = ({
 		mapRef.current.addListener('click', ({ latLng }: any) => {
 			const lat = latLng.lat();
 			const lng = latLng.lng();
+			const name = window.prompt('Enter stop name');
 
 			window.ws!.addEventListener(
 				'message',
 				({ data: msgData }) => {
 					const data = JSON.parse(msgData);
 					if (data.op === 'UPSERT_STOP_SUCCESS') {
-						const { lat, lng, id } = data.data;
+						const { lat, lng, id, name } = data.data;
 						//@ts-ignore
-						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id }], 'id'));
+						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id, name }], 'id'));
 					}
 				},
 				{ once: true }
@@ -65,7 +66,7 @@ export const Map = ({
 				JSON.stringify({
 					op: 'UPSERT_STOP',
 					auth: localStorage.getItem('auth'),
-					data: { location: { lat, lng }, associated_vehicle: vehicleId }
+					data: { location: { lat, lng }, associated_vehicle: vehicleId, name }
 				})
 			);
 		});
@@ -115,10 +116,10 @@ export const Map = ({
 								({ data: msgData }) => {
 									const data = JSON.parse(msgData);
 									if (data.op === 'UPSERT_STOP_SUCCESS') {
-										const { lat, lng, id } = data.data;
+										const { lat, lng, id, name } = data.data;
 										//@ts-ignore
 										setMarkers((prevMarkers) =>
-											unique([...prevMarkers.filter((p: any) => p.id !== id), { lat, lng, id }], 'id')
+											unique([...prevMarkers.filter((p: any) => p.id !== id), { lat, lng, id, name }], 'id')
 										);
 									}
 								},

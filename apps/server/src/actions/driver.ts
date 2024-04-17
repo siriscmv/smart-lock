@@ -22,7 +22,13 @@ export default async function driver(ws: WebSocket, msg: string) {
 	if (!vehicle) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
 
 	const destinations = await prisma.vehicle_locations.findMany({ where: { v_id: vid } });
-	const distance = Math.min(...destinations.map((d) => getDistance(lat, lon, d.latitude, d.longitude)));
+	const withDistances = destinations.map((d) => ({
+		destination: d,
+		distance: getDistance(lat, lon, d.latitude, d.longitude)
+	}));
+	const distances = withDistances.map((d) => d.distance);
+	const distance = Math.min(...distances);
+	const closestStop = withDistances.find((d) => d.distance === distance)!.destination;
 
 	if (distance > 0.1) {
 		ws.send(
@@ -31,13 +37,14 @@ export default async function driver(ws: WebSocket, msg: string) {
 				msg: `You are ${humanize(distance)} away from the destination`
 			})
 		);
-		const res = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+		const vehicle = await prisma.vehicles.findFirst({ where: { v_id: vid } });
+		const driverFromDB = await prisma.drivers.findFirst({ where: { id: driver.id } });
 		await log({
 			v_id: vid,
 			d_id: driver.id,
-			action: `${res?.name ?? 'vehicle'} requested an ${op}, but was rejected for being ${humanize(
-				distance
-			)} away from the closest stop`
+			action: `${driverFromDB?.username ?? driver.id.toString()} requested an ${op} for ${
+				vehicle?.name ?? vehicle?.v_id.toString()
+			}, but was rejected for being ${humanize(distance)} away from the closest stop`
 		});
 		return;
 	}
@@ -53,11 +60,14 @@ export default async function driver(ws: WebSocket, msg: string) {
 					)} away from the destination`
 				})
 			);
-			const res = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+			const vehicle = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+			const driverFromDB = await prisma.drivers.findFirst({ where: { id: driver.id } });
 			await log({
 				v_id: vid,
 				d_id: driver.id,
-				action: `${res?.name ?? 'vehicle'} was ${op === 'REQUEST_LOCK' ? 'LOCKED' : 'UNLOCKED'}`
+				action: `${vehicle?.name ?? vid.toString()} was ${op === 'REQUEST_LOCK' ? 'LOCKED' : 'UNLOCKED'} by ${
+					driverFromDB?.username ?? driver.id.toString()
+				} at ${closestStop.name}`
 			});
 		} else {
 			// Propogate the error

@@ -43,21 +43,17 @@ export default function Owner() {
 			<div className='flex flex-col text-xl'>
 				<span className='text-2xl font-bold mb-6'>Logs</span>
 				<div className='grid grid-cols-5 grid-rows-1 text-primary text-xl font-bold'>
-					<span>Driver</span>
-					<span>Vehicle</span>
-					<span>Action</span>
-					<span>Distance</span>
 					<span>Time</span>
+					<span>Action</span>
 				</div>
 				<div className='flex flex-col'>
-					{logs.map((log) => {
+					{logs.map((log, index) => {
+						const isEvenRow = index % 2 === 0;
+						const rowColorClass = isEvenRow ? 'bg-gray-200' : 'bg-gray-100';
 						return (
-							<div className='grid grid-cols-5 grid-rows-1' key={log.timestamp}>
-								<span>{log.d_id}</span>
-								<span>{log.v_id}</span>
-								<span>{log.action}</span>
-								<span>{log.distance}</span>
+							<div className={`grid grid-cols-5 grid-rows-1 ${rowColorClass}`} key={log.timestamp}>
 								<span>{new Date(log.timestamp).toUTCString()}</span>
+								<span>{log.action}</span>
 							</div>
 						);
 					})}
