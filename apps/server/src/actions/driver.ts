@@ -31,8 +31,14 @@ export default async function driver(ws: WebSocket, msg: string) {
 				msg: `You are ${humanize(distance)} away from the destination`
 			})
 		);
-
-		await log({ v_id: vid, d_id: driver.id, action: (op + '_REJECTED') as Data['action'], distance });
+		const res = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+		await log({
+			v_id: vid,
+			d_id: driver.id,
+			action: `${res?.name ?? 'vehicle'} requested an ${op}, but was rejected for being ${humanize(
+				distance
+			)} away from the closest stop`
+		});
 		return;
 	}
 
@@ -47,14 +53,16 @@ export default async function driver(ws: WebSocket, msg: string) {
 					)} away from the destination`
 				})
 			);
-			await log({ v_id: vid, d_id: driver.id, action: op === 'REQUEST_LOCK' ? 'LOCKED' : 'UNLOCKED', distance });
+			const res = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+			await log({
+				v_id: vid,
+				d_id: driver.id,
+				action: `${res?.name ?? 'vehicle'} was ${op === 'REQUEST_LOCK' ? 'LOCKED' : 'UNLOCKED'}`
+			});
 		} else {
-			ws.send(
-				JSON.stringify({
-					op: op + '_FAIL'
-				})
-			);
-			await log({ v_id: vid, d_id: driver.id, action: 'FAIL', distance });
+			// Propogate the error
+			ws.send(JSON.stringify(data));
+			// await log({ v_id: vid, d_id: driver.id, action: 'FAIL' });
 		}
 	});
 

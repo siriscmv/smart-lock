@@ -3,10 +3,10 @@
 	"version": "0.1.0",
 	"private": true,
 	"prisma": {
-		"schema": "./src/utils/schema.prisma"
+		"schema": "../server/schema.prisma"
 	},
 	"scripts": {
-		"next:dev": "next dev",
+		"next:dev": "next dev -p 9999",
 		"tw:dev": "npx tailwindcss -i ./src/styles/tw.css -o ./src/styles/globals.css --watch",
 		"dev": "run-p tw:dev next:dev",
 		"build": "npx tailwindcss -i ./src/styles/tw.css -o ./src/styles/globals.css --minify && next build",

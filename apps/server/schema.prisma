@@ -9,6 +9,7 @@ datasource db {
 
 model vehicle_locations {
   id        Int   @id @default(autoincrement())
+  name      String
   latitude  Float
   longitude Float
   v_id      Int
@@ -40,11 +41,15 @@ model authorized_drivers {
   @@id([v_id, d_id])
 }
 
+model vehicles {
+  v_id Int @id @default(autoincrement())
+  name String
+}
+
 model logs {
   v_id      Int
   d_id      Int
   timestamp DateTime
-  distance  Float
   action    String
 
   @@id([v_id, d_id, timestamp])

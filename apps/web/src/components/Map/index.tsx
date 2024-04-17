@@ -35,6 +35,12 @@ export const Map = ({
 
 	useEffect(() => {
 		if (!mapReady || !mapRef.current) return;
+
+		mapRef.current.setCenter(center);
+	}, [center]);
+
+	useEffect(() => {
+		if (!mapReady || !mapRef.current) return;
 		if (markers === null) return;
 		if (init) return;
 
@@ -71,6 +77,7 @@ export const Map = ({
 				apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 				bootstrapURLKeys={{ key: '' }}
 				defaultCenter={center}
+				c
 				defaultZoom={zoom}
 				//@ts-ignore
 				onGoogleApiLoaded={({ map }) => {

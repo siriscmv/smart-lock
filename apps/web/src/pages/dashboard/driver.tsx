@@ -1,7 +1,9 @@
 import Button from '@components/Button';
 import { Map } from '@components/Map';
+import { useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
+import { getLatLong } from 'src/utils/geocoder';
 
 export default function Driver() {
 	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
@@ -11,27 +13,33 @@ export default function Driver() {
 		watchPosition: true,
 		userDecisionTimeout: 15_000
 	});
+	const [simulation, setSimulation] = useState<{ lat: number; lng: number } | null>(null);
 
 	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
 	if (!isGeolocationAvailable || !coords)
 		return <span className='text-danger text-2xl font-bold'>Geolocation is not available</span>;
 
+	const lat = simulation?.lat ?? coords.latitude;
+	const lng = simulation?.lng ?? coords.longitude;
+
 	return (
 		<div className='flex flex-col text-center'>
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
-					<Map
-						markers={null}
-						center={{ lat: coords.latitude, lng: coords.longitude }}
-						zoom={20}
-						lat={coords.latitude}
-						lng={coords.longitude}
-					/>
+					<Map markers={null} center={{ lat, lng }} zoom={20} lat={lat} lng={lng} />
 				</div>
-				<span>Your Latitude: {coords.latitude}</span>
-				<span>Your Longitude: {coords.longitude}</span>
+				<span>Your Latitude: {lat}</span>
+				<span>Your Longitude: {lng}</span>
 			</div>
 			<div className='flex flex-row justify-center'>
+				<Button
+					text='Simulate location'
+					run={async () => {
+						const query = window.prompt('Enter a location to simulate');
+						const result = await getLatLong(query!);
+						setSimulation(result);
+					}}
+				/>
 				{['Lock', 'Unlock'].map((b) => (
 					<Button
 						key={b}
@@ -53,8 +61,8 @@ export default function Driver() {
 										JSON.stringify({
 											op: `REQUEST_${b.toUpperCase()}`,
 											data: {
-												lat: coords.latitude,
-												lon: coords.longitude
+												lat,
+												lon: lng
 											},
 											auth: localStorage.getItem('auth')
 										})

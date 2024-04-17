@@ -11,15 +11,25 @@ v_id = os.environ.get('VEHICLE_ID')
 def on_message(ws, message):
     data = json.loads(message)
     if data.get('op') == 'LOCK':
-        lock()
-        data['op'] += '_OK'
-        ws.send(json.dumps(data))
+        try:
+            lock()
+            data['op'] += '_OK'
+            ws.send(json.dumps(data))
+        except Exception as e:
+            data['op'] += '_FAIL'
+            data['error'] = str(e)
+            ws.send(json.dumps(data))
     elif data.get('op') == 'UNLOCK':
-        unlock()
-        data['op'] += '_OK'
-        ws.send(json.dumps(data))
+        try:
+            unlock()
+            data['op'] += '_OK'
+            ws.send(json.dumps(data))
+        except Exception as e:
+            data['op'] += '_FAIL'
+            data['error'] = str(e)
+            ws.send(json.dumps(data))
     elif data.get('op') == 'ADD_OTP':
-        with open("/home/pi/smart-lock-client/pwd", "a") as file:
+        with open("/home/pi/pwd", "a") as file:
             file.write(data.get('password') + "\n")
         data['op'] += '_SUCCESS'
         ws.send(json.dumps(data))
