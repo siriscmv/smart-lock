@@ -62,7 +62,6 @@ export default function Owner() {
 			/>
 			<div className='flex flex-col items-center mt-6'>
 				<div className={'grid grid-cols-4 grid-rows-1 w-[50vw] underline'}>
-					<span>ID</span>
 					<span>Name</span>
 					<span>LAT</span>
 					<span>LON</span>
@@ -73,7 +72,6 @@ export default function Owner() {
 							currentlyHoveredMarker === marker.id ? 'text-primary' : 'text-white'
 						}`}
 					>
-						<span>{marker.id}</span>
 						<span>{marker.name}</span>
 						<span>{marker.lat.toFixed(4)}</span>
 						<span>{marker.lng.toFixed(4)}</span>

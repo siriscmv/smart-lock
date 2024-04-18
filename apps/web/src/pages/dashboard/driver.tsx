@@ -52,7 +52,7 @@ export default function Driver() {
 											const d = JSON.parse(msg.data);
 
 											if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
-											else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
+											else reject(d.msg ?? d.error ?? `Failed to ${b.toLowerCase()}`);
 										},
 										{ once: true }
 									);

@@ -55,6 +55,7 @@ export const Map = ({
 				({ data: msgData }) => {
 					const data = JSON.parse(msgData);
 					if (data.op === 'UPSERT_STOP_SUCCESS') {
+						debugger;
 						const { lat, lng, id, name } = data.data;
 						//@ts-ignore
 						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id, name }], 'id'));

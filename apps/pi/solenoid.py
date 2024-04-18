@@ -6,6 +6,8 @@ pin_number = int(os.environ.get('PIN_NUMBER'))   # type: ignore
 is_unlocked = False
 
 def unlock():
+    global is_unlocked
+
     if is_unlocked: raise Exception("Already unlocked")
 
     GPIO.setmode(GPIO.BCM)
@@ -17,6 +19,8 @@ def unlock():
 # This is needed because setting the pin to LOW mode will still emit some small amount of voltage which is enough to trigger the relay
 # Setting it to INPUT (done by cleanup()) rather than low will completely get rid of the voltage
 def lock():
+    global is_unlocked
+
     if not is_unlocked: raise Exception("Already locked")
 
     GPIO.cleanup() 
