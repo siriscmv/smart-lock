@@ -6,7 +6,7 @@ export default function Toaster() {
 			position='top-center'
 			reverseOrder={true}
 			toastOptions={{
-				duration: 6_000,
+				duration: 20_000,
 				className: 'text-center',
 				loading: {
 					style: {

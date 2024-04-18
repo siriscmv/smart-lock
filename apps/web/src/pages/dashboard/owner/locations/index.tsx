@@ -1,19 +1,16 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { listenOnce } from 'src/utils/listner';
 
 export default function Owner() {
 	const [vehicles, setVehicles] = useState<number[]>([]);
 	useEffect(() => {
-		window.ws!.addEventListener(
-			'message',
-			(msg) => {
-				const { op, data } = JSON.parse(msg.data);
-				if (op === 'ALL_VEHICLES') {
-					setVehicles(data);
-				}
-			},
-			{ once: true }
-		);
+		listenOnce((msg) => {
+			const { op, data } = JSON.parse(msg.data);
+			if (op === 'ALL_VEHICLES') {
+				setVehicles(data);
+			}
+		});
 		window.ws!.send(JSON.stringify({ op: 'GET_ALL_VEHICLES', auth: localStorage.getItem('auth') }));
 	}, []);
 

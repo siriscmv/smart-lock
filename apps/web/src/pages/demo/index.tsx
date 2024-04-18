@@ -3,6 +3,7 @@ import { useGeolocated } from 'react-geolocated';
 import toast from 'react-hot-toast';
 import { Map } from '@components/Map';
 import { useEffect, useState } from 'react';
+import { listenOnce } from 'src/utils/listner';
 
 //TODO: Add delete/remove marker option here too
 export default function Demo() {
@@ -60,16 +61,12 @@ export default function Demo() {
 						run={() => {
 							toast.promise(
 								new Promise<string>((resolve, reject) => {
-									window.ws!.addEventListener(
-										'message',
-										(msg) => {
-											const d = JSON.parse(msg.data);
+									listenOnce((msg) => {
+										const d = JSON.parse(msg.data);
 
-											if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
-											else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
-										},
-										{ once: true }
-									);
+										if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
+										else reject(d.msg ?? `Failed to ${b.toLowerCase()}`);
+									});
 
 									window.ws!.send(
 										JSON.stringify({

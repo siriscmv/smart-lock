@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { useRouter } from 'next/router';
 import unique from 'src/utils/unique';
+import { listenOnce } from 'src/utils/listner';
 
 export default function Owner() {
 	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
@@ -17,24 +18,18 @@ export default function Owner() {
 	const [currentlyHoveredMarker, setCurrentlyHoveredMarker] = useState<number | null>(null);
 
 	useEffect(() => {
-		window.ws!.addEventListener(
-			'message',
-			(msg) => {
-				const { op, data } = JSON.parse(msg.data);
-				if (op === 'ALL_STOPS') {
-					setMarkers((prevMarkers) =>
-						unique(
-							[
-								...prevMarkers,
-								...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude, name: d.name }))
-							],
-							'id'
-						)
-					);
-				}
-			},
-			{ once: true }
-		);
+		listenOnce((msg) => {
+			const { op, data } = JSON.parse(msg.data);
+			if (op === 'ALL_STOPS') {
+				setMarkers((prevMarkers) =>
+					unique(
+						[...prevMarkers, ...data.map((d: any) => ({ id: d.id, lat: d.latitude, lng: d.longitude, name: d.name }))],
+						'id'
+					)
+				);
+			}
+		});
+
 		window.ws!.send(
 			JSON.stringify({
 				op: 'GET_ALL_STOPS',
@@ -78,16 +73,12 @@ export default function Owner() {
 						<button
 							className='text-danger font-black cursor-pointer hover:underline'
 							onClick={() => {
-								window.ws!.addEventListener(
-									'message',
-									(msg) => {
-										const { op } = JSON.parse(msg.data);
-										if (op === 'REMOVE_STOP_SUCCESS') {
-											setMarkers((prevMarkers) => unique([...prevMarkers.filter((m) => m.id !== marker.id)], 'id'));
-										}
-									},
-									{ once: true }
-								);
+								listenOnce((msg) => {
+									const { op } = JSON.parse(msg.data);
+									if (op === 'REMOVE_STOP_SUCCESS') {
+										setMarkers((prevMarkers) => unique([...prevMarkers.filter((m) => m.id !== marker.id)], 'id'));
+									}
+								});
 								window.ws!.send(
 									JSON.stringify({
 										op: 'REMOVE_STOP',

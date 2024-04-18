@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { listenOnce } from 'src/utils/listner';
 
 interface Data {
 	distance: number;
@@ -16,17 +17,12 @@ export default function Owner() {
 			if (log.op === 'ACTION_LOG') setLogs((logs) => [log.data, ...logs]);
 		};
 
-		window.ws!.addEventListener(
-			'message',
-			(msg) => {
-				const d = JSON.parse(msg.data);
-				if (d.op === 'LASTEST_ACTION_LOGS') {
-					setLogs((logs) => [...d.data, ...logs]);
-				}
-				// TODO: Handle edge cases everywhere, where another msg can be received before the one we're waiting for
-			},
-			{ once: true }
-		);
+		listenOnce((msg) => {
+			const d = JSON.parse(msg.data);
+			if (d.op === 'LASTEST_ACTION_LOGS') {
+				setLogs((logs) => [...d.data, ...logs]);
+			}
+		});
 
 		const ob = {
 			op: 'GET_LASTEST_ACTION_LOGS',

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Button from '@components/Button';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { listenOnce } from 'src/utils/listner';
 
 interface AuthProps {
 	type: 'OWNER' | 'DRIVER';
@@ -68,19 +69,15 @@ const Auth = (props: AuthProps) => {
 						}
 					};
 
-					window.ws?.addEventListener(
-						'message',
-						(msg) => {
-							const d = JSON.parse(msg.data);
-							if (!d.auth) {
-								toast.error('Failed to login');
-								return;
-							}
-							localStorage.setItem('auth', d.auth);
-							router.push(`/dashboard/${props.type.toLowerCase()}`);
-						},
-						{ once: true }
-					);
+					listenOnce((msg) => {
+						const d = JSON.parse(msg.data);
+						if (!d.auth) {
+							toast.error('Failed to login');
+							return;
+						}
+						localStorage.setItem('auth', d.auth);
+						router.push(`/dashboard/${props.type.toLowerCase()}`);
+					});
 
 					window.ws?.send(JSON.stringify(ob));
 				}}

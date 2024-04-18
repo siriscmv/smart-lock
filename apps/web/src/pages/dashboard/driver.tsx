@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 import { getLatLong } from 'src/utils/geocoder';
+import { listenOnce } from 'src/utils/listner';
 
 const SERVICE_UUID = '00000000-0000-1000-8000-00123456789a';
 const CHARACTERISTIC_UUID = '00000000-0000-1000-8000-00123456789c';
@@ -50,19 +51,15 @@ export default function Driver() {
 							let trigger_ble = true;
 							toast.promise(
 								new Promise<string>(async (resolve, reject) => {
-									window.ws!.addEventListener(
-										'message',
-										(msg) => {
-											const d = JSON.parse(msg.data);
+									listenOnce((msg) => {
+										const d = JSON.parse(msg.data);
 
-											if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
-											else {
-												reject(d.msg ?? d.error ?? `Failed to ${b.toLowerCase()}`);
-												trigger_ble = false;
-											}
-										},
-										{ once: true }
-									);
+										if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
+										else {
+											reject(d.msg ?? d.error ?? `Failed to ${b.toLowerCase()}`);
+											trigger_ble = false;
+										}
+									});
 
 									window.ws!.send(
 										JSON.stringify({

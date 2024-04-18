@@ -1,6 +1,7 @@
 import Button from '@components/Button';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { listenOnce } from 'src/utils/listner';
 
 export default function Password() {
 	const [password, setPassword] = useState('');
@@ -41,15 +42,11 @@ export default function Password() {
 							auth: localStorage.getItem('auth')
 						};
 
-						window.ws?.addEventListener(
-							'message',
-							(msg) => {
-								const d = JSON.parse(msg.data);
-								if (d.op === 'ADD_OTP_SUCCESS') toast.success('Done!');
-								else toast.error('Something went wrong');
-							},
-							{ once: true }
-						);
+						listenOnce((msg) => {
+							const d = JSON.parse(msg.data);
+							if (d.op === 'ADD_OTP_SUCCESS') toast.success('Done!');
+							else toast.error('Something went wrong');
+						});
 
 						window.ws?.send(JSON.stringify(ob));
 					}}

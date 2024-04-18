@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react';
+import { listenOnce } from 'src/utils/listner';
 import unique from 'src/utils/unique';
 
 export default function Owner() {
 	const [drivers, setDrivers] = useState<{ driver: number; vehicle: number }[]>([]);
 
 	useEffect(() => {
-		window.ws!.addEventListener(
-			'message',
-			(msg) => {
-				const d = JSON.parse(msg.data);
-				if (d.op === 'GET_DRIVERS_SUCCESS') {
-					setDrivers((prevDrivers) => unique([...prevDrivers, ...d.data], 'driver'));
-				}
-			},
-			{ once: true }
-		);
+		listenOnce((msg) => {
+			const d = JSON.parse(msg.data);
+			if (d.op === 'GET_DRIVERS_SUCCESS') {
+				setDrivers((prevDrivers) => unique([...prevDrivers, ...d.data], 'driver'));
+			}
+		});
 		window.ws!.send(JSON.stringify({ op: 'GET_DRIVERS', auth: localStorage.getItem('auth') }));
 	}, []);
 
@@ -82,17 +79,14 @@ export default function Owner() {
 					const associated_vehicle = parseInt(window.prompt('Enter vehicle ID:') ?? '');
 					if (isNaN(associated_vehicle)) return;
 
-					window.ws!.addEventListener(
-						'message',
-						({ data: msgData }) => {
-							const data = JSON.parse(msgData);
-							if (data.op === 'ADD_DRIVER_SUCCESS') {
-								const { id } = data.data;
-								setDrivers((drivers) => unique([...drivers, { driver: id, vehicle: associated_vehicle }], 'driver'));
-							}
-						},
-						{ once: true }
-					);
+					listenOnce(({ data: msgData }) => {
+						const data = JSON.parse(msgData);
+						if (data.op === 'ADD_DRIVER_SUCCESS') {
+							const { id } = data.data;
+							setDrivers((drivers) => unique([...drivers, { driver: id, vehicle: associated_vehicle }], 'driver'));
+						}
+					});
+
 					window.ws!.send(
 						JSON.stringify({
 							op: 'ADD_DRIVER',

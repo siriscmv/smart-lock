@@ -2,6 +2,7 @@ import GoogleMap from 'google-maps-react-markers';
 import { useEffect, useRef, useState } from 'react';
 import Marker from './Marker';
 import unique from 'src/utils/unique';
+import { listenOnce } from 'src/utils/listner';
 
 interface MapProps {
 	center: {
@@ -50,19 +51,16 @@ export const Map = ({
 			const lng = latLng.lng();
 			const name = window.prompt('Enter stop name');
 
-			window.ws!.addEventListener(
-				'message',
-				({ data: msgData }) => {
-					const data = JSON.parse(msgData);
-					if (data.op === 'UPSERT_STOP_SUCCESS') {
-						debugger;
-						const { lat, lng, id, name } = data.data;
-						//@ts-ignore
-						setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id, name }], 'id'));
-					}
-				},
-				{ once: true }
-			);
+			listenOnce(({ data: msgData }) => {
+				const data = JSON.parse(msgData);
+				if (data.op === 'UPSERT_STOP_SUCCESS') {
+					debugger;
+					const { lat, lng, id, name } = data.data;
+					//@ts-ignore
+					setMarkers((prevMarkers) => unique([...prevMarkers, { lat, lng, id, name }], 'id'));
+				}
+			});
+
 			window.ws!.send(
 				JSON.stringify({
 					op: 'UPSERT_STOP',
@@ -112,20 +110,16 @@ export const Map = ({
 							if (!e) return;
 							const { lat, lng } = latLng;
 
-							window.ws!.addEventListener(
-								'message',
-								({ data: msgData }) => {
-									const data = JSON.parse(msgData);
-									if (data.op === 'UPSERT_STOP_SUCCESS') {
-										const { lat, lng, id, name } = data.data;
-										//@ts-ignore
-										setMarkers((prevMarkers) =>
-											unique([...prevMarkers.filter((p: any) => p.id !== id), { lat, lng, id, name }], 'id')
-										);
-									}
-								},
-								{ once: true }
-							);
+							listenOnce(({ data: msgData }) => {
+								const data = JSON.parse(msgData);
+								if (data.op === 'UPSERT_STOP_SUCCESS') {
+									const { lat, lng, id, name } = data.data;
+									//@ts-ignore
+									setMarkers((prevMarkers) =>
+										unique([...prevMarkers.filter((p: any) => p.id !== id), { lat, lng, id, name }], 'id')
+									);
+								}
+							});
 							window.ws!.send(
 								JSON.stringify({
 									op: 'UPSERT_STOP',
