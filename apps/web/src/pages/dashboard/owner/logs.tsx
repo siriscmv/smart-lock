@@ -46,7 +46,7 @@ export default function Owner() {
 					<span>Time</span>
 					<span>Action</span>
 				</div>
-				<div className='flex flex-col'>
+				<div className='flex flex-col text-black'>
 					{logs.map((log, index) => {
 						const isEvenRow = index % 2 === 0;
 						const rowColorClass = isEvenRow ? 'bg-gray-200' : 'bg-gray-100';
