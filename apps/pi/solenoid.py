@@ -7,7 +7,6 @@ is_unlocked = False
 
 def unlock():
     global is_unlocked
-
     if is_unlocked: raise Exception("Already unlocked")
 
     GPIO.setmode(GPIO.BCM)
@@ -20,12 +19,14 @@ def unlock():
 # Setting it to INPUT (done by cleanup()) rather than low will completely get rid of the voltage
 def lock():
     global is_unlocked
-
     if not is_unlocked: raise Exception("Already locked")
 
     GPIO.cleanup() 
 
     is_unlocked = False
+
+def handle_handshake():
+    complete_handshake()
 
 def handle_password(dbus_bytes):
     str_val = bytes([byte for byte in dbus_bytes]).decode('utf-8')
@@ -46,3 +47,19 @@ def handle_password(dbus_bytes):
 
             
     except Exception as e: print("An error occurred:", e)
+
+event = threading.Event()
+
+# Blocks the normal flow
+def wait_for_handshake():
+    print("Waiting for event...")
+    if event.wait(timeout=15):
+        print("Event has been set!")
+        event.clear()
+    else:
+        print("Timeout occurred, event not set within the specified timeout.")
+
+# called by BLE module
+def complete_handshake():
+    print("Setting event...")
+    event.set()

@@ -5,6 +5,9 @@ import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 import { getLatLong } from 'src/utils/geocoder';
 
+const SERVICE_UUID = '00000000-0000-1000-8000-00123456789a';
+const CHARACTERISTIC_UUID = '00000000-0000-1000-8000-00123456789c';
+
 export default function Driver() {
 	const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
 		positionOptions: {
@@ -45,7 +48,7 @@ export default function Driver() {
 						key={b}
 						run={() => {
 							toast.promise(
-								new Promise<string>((resolve, reject) => {
+								new Promise<string>(async (resolve, reject) => {
 									window.ws!.addEventListener(
 										'message',
 										(msg) => {
@@ -67,6 +70,17 @@ export default function Driver() {
 											auth: localStorage.getItem('auth')
 										})
 									);
+
+									// Trigger the 2nd part of the handshake (ble)
+									//@ts-ignore
+									const device = await navigator.bluetooth.requestDevice({
+										acceptAllDevices: true,
+										optionalServices: [SERVICE_UUID]
+									});
+									const server = await device.gatt.connect();
+									const service = await server.getPrimaryService(SERVICE_UUID);
+									const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+									await characteristic.writeValue(new TextEncoder().encode('complete_handshake')); // This text is not relevant
 								}),
 								{
 									loading: `Requesting ${b.toLowerCase()}...`,

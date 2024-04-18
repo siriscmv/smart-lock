@@ -12,7 +12,7 @@ except ImportError:
   import gobject as GObject
 import sys
 
-from solenoid import lock, unlock, handle_password
+from solenoid import lock, unlock, handle_password, handle_handshake
 
 mainloop = None
 
@@ -351,8 +351,9 @@ class LockService(Service):
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.SVC_UUID, True)
         self.add_characteristic(SendPasswordCharacteristic(bus, 0, self))
-        self.add_characteristic(TestEncryptCharacteristic(bus, 1, self))
-        self.add_characteristic(TestSecureCharacteristic(bus, 2, self))
+        self.add_characteristic(BleHandshakeCharacteristic(bus, 1, self))
+        self.add_characteristic(TestEncryptCharacteristic(bus, 2, self))
+        self.add_characteristic(TestSecureCharacteristic(bus, 3, self))
 
 class SendPasswordCharacteristic(Characteristic):
     PW_CHRC_UUID = '00000000-0000-1000-8000-00123456789b'
@@ -376,6 +377,30 @@ class SendPasswordCharacteristic(Characteristic):
         print('SendPasswordCharacteristic Write: ' + repr(value))
         self.value = value
         handle_password(value)
+
+# This is for when the driver needs to press btn to talk to server, and then also needs to connect via ble to actually control the lock
+class BleHandshakeCharacteristic(Characteristic):
+    BLE_CHRC_UUID = '00000000-0000-1000-8000-00123456789c'
+
+    def __init__(self, bus, index, service):
+        Characteristic.__init__(
+                self, bus, index,
+                self.BLE_CHRC_UUID,
+                ['read', 'write'],
+                service)
+        self.value = []
+        self.add_descriptor(TestDescriptor(bus, 0, self))
+        self.add_descriptor(
+                CharacteristicUserDescriptionDescriptor(bus, 1, self))
+
+    def ReadValue(self, options):
+        print('BleHandshakeCharacteristic Read: ' + repr(self.value))
+        return self.value
+
+    def WriteValue(self, value, options):
+        print('BleHandshakeCharacteristic Write: ' + repr(value))
+        self.value = value
+        handle_handshake(value)
 
 
 class TestDescriptor(Descriptor):
