@@ -51,9 +51,11 @@ export default async function driver(ws: WebSocket, msg: string) {
 		} else if (!existing.isLocked) {
 			vehicle.ws.send(JSON.stringify({ op: 'LOCK', __BYPASS_HANDSHAKE: true }));
 			ws.send(JSON.stringify({ op: 'ALERT', msg: 'Door was automatically locked' }));
-		}
 
-		positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: true };
+			positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: true };
+		} else {
+			positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: true };
+		}
 
 		return;
 	}
