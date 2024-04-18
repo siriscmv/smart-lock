@@ -36,11 +36,13 @@ def handle_password(dbus_bytes):
             passwords = file.read().split("\n")
             if password not in passwords: return
 
+            if (action == "LOCK"): lock()
+            else: unlock()
+
             new_passwords = [p for p in passwords if p != password]
             file.seek(0)
             file.truncate()
             file.write("\n".join(new_passwords))
 
-            if (action == "LOCK"): lock()
-            else: unlock()
+            
     except Exception as e: print("An error occurred:", e)
