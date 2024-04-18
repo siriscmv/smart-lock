@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import os
+import threading
 
 pin_number = int(os.environ.get('PIN_NUMBER'))   # type: ignore
 

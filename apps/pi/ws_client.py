@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import json
 import websocket
 import os
-from solenoid import lock, unlock, wait_for_handshake, 
+from solenoid import lock, unlock, wait_for_handshake
 from ble import run_ble
 
 websocket_address = os.environ.get('WEBSOCKET_ADDRESS') 
@@ -25,7 +25,7 @@ def on_message(ws, message):
         try:
             wait_for_handshake()
             unlock()
-            
+
             data['op'] += '_OK'
             ws.send(json.dumps(data))
         except Exception as e:

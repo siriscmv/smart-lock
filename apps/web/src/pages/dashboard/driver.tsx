@@ -47,6 +47,7 @@ export default function Driver() {
 					<Button
 						key={b}
 						run={() => {
+							let trigger_ble = true;
 							toast.promise(
 								new Promise<string>(async (resolve, reject) => {
 									window.ws!.addEventListener(
@@ -55,7 +56,10 @@ export default function Driver() {
 											const d = JSON.parse(msg.data);
 
 											if (d.op.endsWith('OK')) resolve(d.msg ?? `${b}ed`);
-											else reject(d.msg ?? d.error ?? `Failed to ${b.toLowerCase()}`);
+											else {
+												reject(d.msg ?? d.error ?? `Failed to ${b.toLowerCase()}`);
+												trigger_ble = false;
+											}
 										},
 										{ once: true }
 									);
@@ -70,6 +74,9 @@ export default function Driver() {
 											auth: localStorage.getItem('auth')
 										})
 									);
+
+									await new Promise((r) => setTimeout(r, 1000));
+									if (!trigger_ble) return;
 
 									// Trigger the 2nd part of the handshake (ble)
 									//@ts-ignore
