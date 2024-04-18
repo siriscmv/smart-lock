@@ -84,7 +84,7 @@ export default function Driver() {
 									const server = await device.gatt.connect();
 									const service = await server.getPrimaryService(SERVICE_UUID);
 									const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
-									await characteristic.writeValue(new TextEncoder().encode('complete_handshake')); // This text is not relevant
+									await characteristic.writeValue(new TextEncoder().encode('complet_handshak')); // This text is not relevant
 								}),
 								{
 									loading: `Requesting ${b.toLowerCase()}...`,

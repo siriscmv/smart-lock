@@ -12,7 +12,7 @@ except ImportError:
   import gobject as GObject
 import sys
 
-from solenoid import lock, unlock, handle_password, handle_handshake
+from solenoid import lock, unlock, handle_password, complete_handshake
 
 mainloop = None
 
@@ -400,7 +400,7 @@ class BleHandshakeCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('BleHandshakeCharacteristic Write: ' + repr(value))
         self.value = value
-        handle_handshake(value)
+        complete_handshake()
 
 
 class TestDescriptor(Descriptor):

@@ -11,3 +11,7 @@ export function listenOnce(callback: Callback) {
 
 	window.ws?.addEventListener('message', handler);
 }
+
+export function listen(callback: Callback) {
+	window.ws?.addEventListener('message', callback);
+}

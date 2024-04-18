@@ -12,7 +12,8 @@ def on_message(ws, message):
     data = json.loads(message)
     if data.get('op') == 'LOCK':
         try:
-            wait_for_handshake()
+            if not data.get('__BYPASS_HANDSHAKE'): 
+                if not wait_for_handshake(): raise Exception("Handshake failed")
             lock()
 
             data['op'] += '_OK'
@@ -23,7 +24,8 @@ def on_message(ws, message):
             ws.send(json.dumps(data))
     elif data.get('op') == 'UNLOCK':
         try:
-            wait_for_handshake()
+            if not data.get('__BYPASS_HANDSHAKE'): 
+                if not wait_for_handshake(): raise Exception("Handshake failed")
             unlock()
 
             data['op'] += '_OK'

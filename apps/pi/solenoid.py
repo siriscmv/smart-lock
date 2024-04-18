@@ -26,9 +26,6 @@ def lock():
 
     is_unlocked = False
 
-def handle_handshake():
-    complete_handshake()
-
 def handle_password(dbus_bytes):
     str_val = bytes([byte for byte in dbus_bytes]).decode('utf-8')
     split = str_val.split("|")
@@ -57,8 +54,10 @@ def wait_for_handshake():
     if event.wait(timeout=15):
         print("Event has been set!")
         event.clear()
-    else:
-        print("Timeout occurred, event not set within the specified timeout.")
+        return True
+    
+    print("Timeout occurred, event not set within the specified timeout.")
+    return False
 
 # called by BLE module
 def complete_handshake():
