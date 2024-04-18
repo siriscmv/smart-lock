@@ -4,13 +4,17 @@ import prisma from '../utils/prisma.js';
 import log from '../utils/log.js';
 import { getDistance, humanize } from '../utils/distance.js';
 
+const ACTIONS = ['REQUEST_LOCK', 'REQUEST_UNLOCK', 'CURRENT_LOCATION'];
+
+const positionMap = {} as Record<number, { stop: number | null; time: number; isLocked: boolean }>;
+
 export default async function driver(ws: WebSocket, msg: string) {
 	const {
 		op,
 		auth,
 		data: { lat, lon }
 	} = JSON.parse(msg);
-	if (op !== 'REQUEST_UNLOCK' && op !== 'REQUEST_LOCK') return;
+	if (!ACTIONS.includes(op)) return;
 
 	const driver = Array.from(connections.values()).find((c) => c.auth === auth && c.type === 'DRIVER');
 	if (!driver) return ws.send(JSON.stringify({ op: op + '_FAIL' }));
@@ -29,6 +33,28 @@ export default async function driver(ws: WebSocket, msg: string) {
 	const distances = withDistances.map((d) => d.distance);
 	const distance = Math.min(...distances);
 	const closestStop = withDistances.find((d) => d.distance === distance)!.destination;
+
+	if (op === 'CURRENT_LOCATION') {
+		const existing = positionMap[vehicle.id];
+		const stop = distance <= 0.1 ? closestStop.id : null;
+
+		if (!existing) {
+			positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: true };
+			return;
+		}
+
+		if (existing.stop === stop) {
+			if (!existing.isLocked && existing.time + 10_000 < Date.now()) {
+				ws.send(JSON.stringify({ op: 'ALERT', msg: 'You are not moving, please lock the truck' }));
+				positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: false };
+			}
+		} else {
+			positionMap[vehicle.id] = { stop, time: Date.now(), isLocked: true };
+			vehicle.ws.send(JSON.stringify({ op: 'LOCK', __BYPASS_HANDSHAKE: true }));
+		}
+
+		return;
+	}
 
 	if (distance > 0.1) {
 		ws.send(
@@ -61,6 +87,7 @@ export default async function driver(ws: WebSocket, msg: string) {
 				})
 			);
 			const vehicle = await prisma.vehicles.findFirst({ where: { v_id: vid } })!;
+			positionMap[vehicle!.v_id] = { stop: closestStop.id, time: Date.now(), isLocked: op === 'REQUEST_LOCK' };
 			const driverFromDB = await prisma.drivers.findFirst({ where: { id: driver.id } });
 			await log({
 				v_id: vid,

@@ -32,6 +32,7 @@
 		"react-geolocated": "^4.0.3",
 		"react-hot-toast": "^2.4.0",
 		"typescript": "4.9.5",
+		"usehooks-ts": "^3.1.0",
 		"ws": "^8.12.1"
 	},
 	"devDependencies": {

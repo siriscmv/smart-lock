@@ -5,6 +5,7 @@ import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-hot-toast';
 import { getLatLong } from 'src/utils/geocoder';
 import { listenOnce } from 'src/utils/listner';
+import { useInterval } from 'usehooks-ts';
 
 const SERVICE_UUID = '00000000-0000-1000-8000-00123456789a';
 const CHARACTERISTIC_UUID = '00000000-0000-1000-8000-00123456789c';
@@ -25,6 +26,20 @@ export default function Driver() {
 
 	const lat = simulation?.lat ?? coords.latitude;
 	const lng = simulation?.lng ?? coords.longitude;
+
+	useInterval(() => {
+		// Advertise location to server for autolocking feature
+		const payload = {
+			op: 'CURRENT_LOCATION',
+			data: {
+				lat,
+				lon: lng
+			},
+			auth: localStorage.getItem('auth')
+		};
+
+		window.ws!.send(JSON.stringify(payload));
+	}, 2_500);
 
 	return (
 		<div className='flex flex-col text-center'>

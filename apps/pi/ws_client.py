@@ -10,30 +10,32 @@ v_id = os.environ.get('VEHICLE_ID')
 
 def on_message(ws, message):
     data = json.loads(message)
+    bypass = data.get('__BYPASS_HANDSHAKE')
+
     if data.get('op') == 'LOCK':
         try:
-            if not data.get('__BYPASS_HANDSHAKE'): 
+            if not bypass: 
                 if not wait_for_handshake(): raise Exception("Handshake failed")
             lock()
 
             data['op'] += '_OK'
-            ws.send(json.dumps(data))
+            if not bypass: ws.send(json.dumps(data))
         except Exception as e:
             data['op'] += '_FAIL'
             data['error'] = str(e)
-            ws.send(json.dumps(data))
+            if not bypass: ws.send(json.dumps(data))
     elif data.get('op') == 'UNLOCK':
         try:
-            if not data.get('__BYPASS_HANDSHAKE'): 
+            if not bypass: 
                 if not wait_for_handshake(): raise Exception("Handshake failed")
             unlock()
 
             data['op'] += '_OK'
-            ws.send(json.dumps(data))
+            if not bypass: ws.send(json.dumps(data))
         except Exception as e:
             data['op'] += '_FAIL'
             data['error'] = str(e)
-            ws.send(json.dumps(data))
+            if not bypass: ws.send(json.dumps(data))
     elif data.get('op') == 'ADD_OTP':
         with open("/home/pi/pwd", "a") as file:
             file.write(data.get('password') + "\n")
