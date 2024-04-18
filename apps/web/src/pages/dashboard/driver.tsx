@@ -18,14 +18,11 @@ export default function Driver() {
 		watchPosition: true,
 		userDecisionTimeout: 15_000
 	});
+
 	const [simulation, setSimulation] = useState<{ lat: number; lng: number } | null>(null);
 
-	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
-	if (!isGeolocationAvailable || !coords)
-		return <span className='text-danger text-2xl font-bold'>Geolocation is not available</span>;
-
-	const lat = simulation?.lat ?? coords.latitude;
-	const lng = simulation?.lng ?? coords.longitude;
+	const lat = simulation?.lat ?? coords?.latitude ?? 0;
+	const lng = simulation?.lng ?? coords?.longitude ?? 0;
 
 	useInterval(() => {
 		// Advertise location to server for autolocking feature
@@ -39,7 +36,11 @@ export default function Driver() {
 		};
 
 		window.ws!.send(JSON.stringify(payload));
-	}, 2_500);
+	}, 5_000);
+
+	if (!isGeolocationEnabled) return <span className='text-danger text-2xl font-bold'>Geolocation is not enabled</span>;
+	if (!isGeolocationAvailable || !coords)
+		return <span className='text-danger text-2xl font-bold'>Geolocation is not available</span>;
 
 	return (
 		<div className='flex flex-col text-center'>
