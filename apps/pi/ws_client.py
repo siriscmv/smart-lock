@@ -52,6 +52,11 @@ def on_open(ws):
 
 def run_ws_client():
     websocket.enableTrace(True)
+
+    # Ensure lock is engaged on startup
+    try: lock()
+    except Exception as e: pass
+
     ws = websocket.WebSocketApp(websocket_address,
                                 on_message=on_message,
                                 on_error=on_error,
