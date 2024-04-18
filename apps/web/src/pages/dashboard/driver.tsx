@@ -46,7 +46,7 @@ export default function Driver() {
 		<div className='flex flex-col text-center'>
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
-					<Map markers={null} center={{ lat, lng }} zoom={20} lat={lat} lng={lng} />
+					<Map isDriver markers={null} center={{ lat, lng }} zoom={20} lat={lat} lng={lng} />
 				</div>
 				<span>Your Latitude: {lat}</span>
 				<span>Your Longitude: {lng}</span>

@@ -46,6 +46,7 @@ export default function Owner() {
 	return (
 		<div className='flex flex-col items-center'>
 			<Map
+				isDriver={false}
 				setCurrentlyHoveredMarker={setCurrentlyHoveredMarker}
 				setMarkers={setMarkers}
 				vehicleId={parseInt(router.query.id as string)}

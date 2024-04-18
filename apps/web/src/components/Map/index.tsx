@@ -12,6 +12,7 @@ interface MapProps {
 	lat: number;
 	lng: number;
 	zoom: number;
+	isDriver: boolean;
 	vehicleId?: number;
 	markers: { lat: number; lng: number; id: number }[] | null;
 	setCurrentlyHoveredMarker?: any; //TODO: Fix types + remove ts ignores
@@ -22,6 +23,7 @@ interface MapProps {
 export const Map = ({
 	center,
 	zoom,
+	isDriver,
 	lat,
 	lng,
 	markers,
@@ -35,7 +37,7 @@ export const Map = ({
 	const [init, setInit] = useState(false);
 
 	useEffect(() => {
-		if (!mapReady || !mapRef.current) return;
+		if (!mapReady || !mapRef.current || !isDriver) return;
 
 		mapRef.current.setCenter(center);
 	}, [center]);

@@ -43,6 +43,7 @@ export default function Demo() {
 			<div className='flex flex-col text-xl mb-6'>
 				<div className='mb-6'>
 					<Map
+						isDriver
 						setDemoCoords={setLatLng}
 						markers={markers}
 						setMarkers={setMarkers}
